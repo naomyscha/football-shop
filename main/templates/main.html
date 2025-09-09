@@ -4,11 +4,31 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ app_name }}</title>
-  <style>body{font-family:system-ui;margin:2rem}</style>
+  <style>
+    body { font-family: system-ui; margin: 2rem; }
+    .product { border: 1px solid #ddd; padding: 1rem; margin: 1rem 0; }
+    img { max-width: 150px; display: block; margin-top: 0.5rem; }
+  </style>
 </head>
 <body>
   <h1>{{ app_name }}</h1>
   <p>Nama: {{ student_name }}</p>
   <p>Kelas: {{ student_class }}</p>
+
+  <h2>Daftar Produk</h2>
+  {% for p in products %}
+    <div class="product">
+      <h3>{{ p.name }}</h3>
+      <p>Harga: Rp {{ p.price }}</p>
+      <p>{{ p.description }}</p>
+      <p>Kategori: {{ p.category }}</p>
+      {% if p.is_featured %}
+        <strong>⭐ Produk Unggulan</strong>
+      {% endif %}
+      <img src="{{ p.thumbnail }}" alt="{{ p.name }}">
+    </div>
+  {% empty %}
+    <p>Belum ada produk tersedia.</p>
+  {% endfor %}
 </body>
 </html>
