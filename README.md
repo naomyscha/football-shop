@@ -34,5 +34,5 @@ migrasi database di Django bekerja dengan cara mencatat perubahan struktur model
 ## Alasan Django beginner-friendly
 Django sering dipilih sebagai framework pertama untuk belajar karena sifatnya lengkap dan ramah pemula. Django sudah menyediakan banyak fitur bawaan (batteries included) seperti ORM untuk database, sistem template, autentikasi, dan pengaturan keamanan, jadi pemula tidak perlu menambahkan modul tambahan hanya untuk fitur dasar. Selain itu, Django menggunakan bahasa Python yang sintaksnya sederhana dan mudah dibaca, sehingga memudahkan mahasiswa atau pengembang baru memahami logika program. Struktur proyeknya juga rapi dan mendorong praktik terbaik (seperti pemisahan model, view, dan template). Hal-hal ini membuat Django jadi pilihan ideal untuk belajar dasar pengembangan aplikasi web sebelum beralih ke framework lain yang lebih kompleks.
 
-# Feedback Asdos
+## Feedback Asdos
 Ka Fahri adalah asdos yang sangat helpful! Beliau selalu responsif dan sangat membantu, terutama selama saya menjalani masa dispensasi. Berkat bimbingan Ka Fahri, saya tidak merasa ada gap knowledge sama sekali dan tetap bisa mengikuti materi dengan baik.
