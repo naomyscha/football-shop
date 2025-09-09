@@ -8,7 +8,7 @@
 3) `python3 manage.py startapp main` lalu daftarkan di `INSTALLED_APPS`.
 4) Buat model `Product` (name, price, description, thumbnail, category, is_featured). `makemigrations` + `migrate`.
 5) Buat view `home` (tampilkan nama app + nama + kelas).
-6) Template `main/templates/main/index.html`.
+6) Template `main/templates/main.html`.
 7) Routing: `main/urls.py` → include di `shop/urls.py`.
 8) `.env` (PRODUCTION=False), konfigurasi DB switch di `settings.py`.
 9) Push ke GitHub, siapkan Environs di PWS, tambah domain ke `ALLOWED_HOSTS`, deploy `git push pws master`.
@@ -29,3 +29,4 @@ sequenceDiagram
     V-->>M: (opsional) query data Product
     V-->>T: render(template, context)
     T-->>C: HTML response
+
