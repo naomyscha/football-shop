@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Add Product</h2>
+
+  {# tampilkan messages kalau ada #}
+  {% if messages %}
+    <ul>
+      {% for m in messages %}
+        <li>{{ m }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+
+  <p style="margin-top:12px;">
+    <a href="{% url 'main:home' %}">← Back</a>
+  </p>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Product Detail</h2>
+  <ul>
+    <li><b>ID:</b> {{ product.id }}</li>
+    <li><b>Name:</b> {{ product.name }}</li>
+    <li><b>Category:</b> {{ product.category }}</li>
+    <li><b>Price:</b> {{ product.price }}</li>
+    <li><b>Featured:</b> {{ product.is_featured }}</li>
+    <li><b>Thumbnail:</b> <a href="{{ product.thumbnail }}" target="_blank">{{ product.thumbnail }}</a></li>
+    <li><b>Description:</b> {{ product.description }}</li>
+  </ul>
+  <p><a href="{% url 'main:home' %}">← Back</a></p>
+{% endblock %}

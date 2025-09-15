@@ -1,54 +1,32 @@
-<!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>{{ app_name }}</title>
-  <style>
-    /* Styling dasar halaman */
-    body { font-family: system-ui; margin: 2rem; }
-  </style>
-</head>
-<body>
-  <h1>{{ app_name }}</h1>
-  <p>Nama: {{ student_name }}</p>
-  <p>Kelas: {{ student_class }}</p>
-</body>
-</html>
+{% extends 'base.html' %}
 
-
-
-<!-- <!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>{{ app_name }}</title>
-  <style>
-    body { font-family: system-ui; margin: 2rem; }
-    .product { border: 1px solid #ddd; padding: 1rem; margin: 1rem 0; }
-    img { max-width: 150px; display: block; margin-top: 0.5rem; }
-  </style>
-</head>
-<body>
+{% block content %}
   <h1>{{ app_name }}</h1>
   <p>Nama: {{ student_name }}</p>
   <p>Kelas: {{ student_class }}</p>
 
-  <h2>Daftar Produk</h2>
-  {% for p in products %}
-    <div class="product">
-      <h3>{{ p.name }}</h3>
-      <p>Harga: Rp {{ p.price }}</p>
-      <p>{{ p.description }}</p>
-      <p>Kategori: {{ p.category }}</p>
-      {% if p.is_featured %}
-        <strong>⭐ Produk Unggulan</strong>
-      {% endif %}
-      <img src="{{ p.thumbnail }}" alt="{{ p.name }}">
-    </div>
-  {% empty %}
-    <p>Belum ada produk tersedia.</p>
-  {% endfor %}
-</body>
-</html> -->
+  <a href="{% url 'main:add_product' %}">➕ Add</a>
+
+  <table border="1" cellpadding="6" cellspacing="0" style="margin-top:12px;">
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Featured</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+        <tr>
+          <td>{{ p.id }}</td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.category }}</td>
+          <td>{{ p.price }}</td>
+          <td>{{ p.is_featured }}</td>
+          <td><a href="{% url 'main:product_detail' p.id %}">Detail</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6">Belum ada produk.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}
+
