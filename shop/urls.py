@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    # Routing ke halaman admin bawaan Django
     path('admin/', admin.site.urls),
+    # Routing root ('/') diarahkan ke urls.py di aplikasi 'main'
     path("", include("main.urls")),  # root -> app main
 ]

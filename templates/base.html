@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Block meta opsional: bisa diisi tiap template turunan -->
+    {% block meta %} {% endblock meta %}
+</head>
+
+<body>
+    <!-- Block konten utama, akan diisi oleh template turunan -->
+    {% block content %} {% endblock content %}
+</body>
+</html>
