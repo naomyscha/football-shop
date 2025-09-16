@@ -19,7 +19,7 @@
       <p><b>ID:</b> {{ product.id }}</p> <!-- ID produk -->
       <p><b>Category:</b> {{ product.category }}</p> <!-- Kategori produk -->
       <p><b>Price:</b> Rp {{ product.price }}</p> <!-- Harga produk -->
-      <p><b>Featured:</b> {{ product.is_featured|yesno:"Yes,No" }}</p> <!-- Status unggulan -->
+      <p><b>Featured:</b> {{ product.is_featured|yesno:"✅,🚫" }}</p> <!-- Status unggulan -->
       <p><b>Image URL:</b>
         {% if product.thumbnail %} <!-- Jika ada gambar produk -->
           <a href="{{ product.thumbnail }}" target="_blank">{{ product.thumbnail }}</a> <!-- Link gambar -->
