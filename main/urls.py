@@ -1,24 +1,20 @@
-from django.urls import path
-from .views import (
-    home,              # sudah ada
-    show_xml, show_json,
-    show_xml_by_id, show_json_by_id,
-    add_product, product_detail
+from django.urls import path  # Import path untuk routing
+from .views import (          # Import semua view yang digunakan
+    home,                     # Halaman utama
+    show_xml, show_json,      # Data produk dalam XML/JSON
+    show_xml_by_id, show_json_by_id, # Data produk by id dalam XML/JSON
+    add_product, product_detail # Form tambah & detail produk
 )
 
-# Namespace untuk aplikasi 'main'
-app_name = "main"
+app_name = "main"             # Namespace aplikasi
 
-# Routing khusus untuk aplikasi 'main'
-# URL "" (root) diarahkan ke fungsi home di views.py
+# Daftar URL routing aplikasi main
 urlpatterns = [
-    path("", home, name="home"),
-    # data delivery
-    path("xml/", show_xml, name="show_xml"),
-    path("json/", show_json, name="show_json"),
-    path("xml/<int:id>/", show_xml_by_id, name="show_xml_by_id"),
-    path("json/<int:id>/", show_json_by_id, name="show_json_by_id"),
-    # form & detail
-    path("add/", add_product, name="add_product"),
-    path("product/<int:id>/", product_detail, name="product_detail"),
+    path("", home, name="home"),                         # Halaman utama
+    path("xml/", show_xml, name="show_xml"),             # Semua produk XML
+    path("json/", show_json, name="show_json"),          # Semua produk JSON
+    path("xml/<int:id>/", show_xml_by_id, name="show_xml_by_id"),   # Produk by id XML
+    path("json/<int:id>/", show_json_by_id, name="show_json_by_id"), # Produk by id JSON
+    path("add/", add_product, name="add_product"),       # Form tambah produk
+    path("product/<int:id>/", product_detail, name="product_detail"), # Detail produk
 ]

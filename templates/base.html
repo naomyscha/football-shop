@@ -1,15 +1,43 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% load static %} <!-- Memuat tag static Django -->
+<!DOCTYPE html> <!-- Deklarasi tipe dokumen HTML -->
+<html lang="id"> <!-- Awal tag HTML, bahasa Indonesia -->
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Block meta opsional: bisa diisi tiap template turunan -->
-    {% block meta %} {% endblock meta %}
+  <meta charset="UTF-8" /> <!-- Set karakter encoding -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- Responsive viewport -->
+  <title>{% block title %}Soccerella{% endblock title %}</title> <!-- Judul halaman, bisa diubah oleh child template -->
+  <style>
+    :root{
+      --bg:#fff8fc; --text:#333; --card:#fff; --border:#f4cfe0; --brand:#f08bb6; /* Variabel warna */
+    }
+    *{box-sizing:border-box} /* Semua elemen menggunakan border-box */
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)} /* Style body */
+    .nav{background:#fff; border-bottom:1px solid var(--border); padding:10px 16px;} /* Style navbar */
+    .nav a{color:#6b355f; text-decoration:none; font-weight:700} /* Style link navbar */
+    .wrap{max-width:900px; margin:18px auto; padding:0 16px;} /* Wrapper konten */
+    .panel{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px;} /* Panel utama */
+    .btn{display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid var(--border); text-decoration:none; color:#6b355f; font-weight:600} /* Style tombol */
+    .btn-primary{background:var(--brand); color:#fff; border-color:#ee7eb0} /* Style tombol utama */
+    .grid{display:grid; gap:12px} /* Style grid */
+    @media(min-width:700px){ .grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)} } /* Responsive grid */
+    .card{border:1px solid var(--border); border-radius:10px; padding:12px; background:#fff} /* Style card */
+    .muted{color:#666; font-size:.95rem} /* Style teks muted */
+    img.resp{max-width:100%; height:auto; display:block; margin:0 auto} /* Style gambar responsif */
+  </style>
+  {% block extra_head %}{% endblock extra_head %} <!-- Blok tambahan di head -->
 </head>
-
 <body>
-    <!-- Block konten utama, akan diisi oleh template turunan -->
-    {% block content %} {% endblock content %}
+  <nav class="nav"> <!-- Navbar -->
+    <div class="wrap">
+      <a href="{% url 'main:home' %}">🎀 SOCCERELLA</a> <!-- Link ke halaman utama -->
+    </div>
+  </nav>
+
+  <main class="wrap"> <!-- Konten utama -->
+    <section class="panel">
+      {% block content %}{% endblock content %} <!-- Blok konten, diisi oleh child template -->
+    </section>
+  </main>
+
+  {% block extra_scripts %}{% endblock extra_scripts %} <!-- Blok tambahan untuk script -->
 </body>
 </html>

@@ -10,140 +10,114 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
-import os
-from dotenv import load_dotenv
-# Load environment variables from .env file
-load_dotenv()
+from pathlib import Path              # Import Path untuk path berbasis objek
+import os                            # Import os untuk environment variable
+from dotenv import load_dotenv        # Import dotenv untuk load .env
+load_dotenv()                        # Load environment variable dari .env
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent  # Path root project
 
+# Pengaturan cepat untuk development
+SECRET_KEY = 'django-insecure-81h9cpx4o55xke=5oegv4b398ttdo7fnr_h0cxsi*ofnf!8uxy' # Secret key Django
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true' # Cek mode produksi
+DEBUG = True                            # Aktifkan debug (jangan di production)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-81h9cpx4o55xke=5oegv4b398ttdo7fnr_h0cxsi*ofnf!8uxy'
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "naomyscha-attalie-footballshop.pbp.cs.ui.ac.id"] # Host yang diizinkan
+CSRF_TRUSTED_ORIGINS = ["https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id"]           # Origin CSRF yang dipercaya
 
-# SECURITY WARNING: don't run with debug turned on in production!
-PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
-DEBUG = True
-
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "naomyscha-attalie-footballshop.pbp.cs.ui.ac.id"]
-CSRF_TRUSTED_ORIGINS = ["https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id"]
-
-
-# Application definition
-
+# Daftar aplikasi yang digunakan
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'main'
+    'django.contrib.admin',             # Admin Django
+    'django.contrib.auth',              # Auth Django
+    'django.contrib.contenttypes',      # Content types
+    'django.contrib.sessions',          # Session
+    'django.contrib.messages',          # Messages
+    'django.contrib.staticfiles',       # Static files
+    'main'                             # Aplikasi utama
 ]
 
+# Daftar middleware yang digunakan
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",   # letakkan setelah SecurityMiddleware
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',         # Middleware keamanan
+    "whitenoise.middleware.WhiteNoiseMiddleware",            # Middleware static file
+    'django.contrib.sessions.middleware.SessionMiddleware',  # Middleware session
+    'django.middleware.common.CommonMiddleware',             # Middleware umum
+    'django.middleware.csrf.CsrfViewMiddleware',             # Middleware CSRF
+    'django.contrib.auth.middleware.AuthenticationMiddleware', # Middleware auth
+    'django.contrib.messages.middleware.MessageMiddleware',   # Middleware pesan
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', # Middleware clickjacking
 ]
 
-ROOT_URLCONF = 'shop.urls'
+ROOT_URLCONF = 'shop.urls'           # File URL utama
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
+        'BACKEND': 'django.template.backends.django.DjangoTemplates', # Backend template
+        'DIRS': [BASE_DIR / 'templates'],                             # Direktori template
+        'APP_DIRS': True,                                             # Cari template di tiap app
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',         # Context processor request
+                'django.contrib.auth.context_processors.auth',        # Context processor auth
+                'django.contrib.messages.context_processors.messages',# Context processor pesan
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'shop.wsgi.application'
+WSGI_APPLICATION = 'shop.wsgi.application' # WSGI aplikasi
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# Database configuration
+# Konfigurasi database
 if PRODUCTION:
-    # Production: gunakan PostgreSQL dengan kredensial dari environment variables
+    # Jika production, pakai PostgreSQL
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME'),
-            'USER': os.getenv('DB_USER'),
-            'PASSWORD': os.getenv('DB_PASSWORD'),
-            'HOST': os.getenv('DB_HOST'),
-            'PORT': os.getenv('DB_PORT'),
+            'ENGINE': 'django.db.backends.postgresql',                # Engine PostgreSQL
+            'NAME': os.getenv('DB_NAME'),                             # Nama DB dari env
+            'USER': os.getenv('DB_USER'),                             # User DB dari env
+            'PASSWORD': os.getenv('DB_PASSWORD'),                     # Password DB dari env
+            'HOST': os.getenv('DB_HOST'),                             # Host DB dari env
+            'PORT': os.getenv('DB_PORT'),                             # Port DB dari env
             'OPTIONS': {
-                'options': f"-c search_path={os.getenv('SCHEMA', 'public')}"
+                'options': f"-c search_path={os.getenv('SCHEMA', 'public')}" # Schema opsional
             }
         }
     }
 else:
-    # Development: gunakan SQLite
+    # Jika development, pakai SQLite
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'ENGINE': 'django.db.backends.sqlite3',                   # Engine SQLite
+            'NAME': BASE_DIR / 'db.sqlite3',                          # Nama file DB
         }
     }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
+# Validator password
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', # Validator kemiripan
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',           # Validator panjang min
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',          # Validator password umum
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',         # Validator numerik
     },
 ]
 
+# Pengaturan internasionalisasi
+LANGUAGE_CODE = 'en-us'           # Bahasa default
+TIME_ZONE = 'UTC'                 # Zona waktu default
+USE_I18N = True                   # Aktifkan i18n
+USE_TZ = True                     # Aktifkan timezone
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# Pengaturan static files
+STATIC_URL = 'static/'            # URL static
+STATIC_ROOT = BASE_DIR / "staticfiles" # Folder static root
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # Default PK

@@ -1,14 +1,33 @@
-{% extends 'base.html' %}
-{% block content %}
-  <h2>Product Detail</h2>
-  <ul>
-    <li><b>ID:</b> {{ product.id }}</li>
-    <li><b>Name:</b> {{ product.name }}</li>
-    <li><b>Category:</b> {{ product.category }}</li>
-    <li><b>Price:</b> {{ product.price }}</li>
-    <li><b>Featured:</b> {{ product.is_featured }}</li>
-    <li><b>Thumbnail:</b> <a href="{{ product.thumbnail }}" target="_blank">{{ product.thumbnail }}</a></li>
-    <li><b>Description:</b> {{ product.description }}</li>
-  </ul>
-  <p><a href="{% url 'main:home' %}">← Back</a></p>
-{% endblock %}
+{% extends 'base.html' %} <!-- Menggunakan template base.html sebagai dasar -->
+
+{% block title %}Soccerella · Detail{% endblock title %} <!-- Judul halaman -->
+
+{% block content %} <!-- Awal blok konten utama -->
+  <a class="btn" href="{% url 'main:home' %}">← Back</a> <!-- Tombol kembali ke halaman utama -->
+  <h2 style="margin-top:10px;">{{ product.name }}</h2> <!-- Nama produk -->
+
+  <div class="grid grid-2" style="margin-top:12px;"> <!-- Grid dua kolom -->
+    <div class="card"> <!-- Card gambar produk -->
+      {% if product.thumbnail %} <!-- Jika ada gambar produk -->
+        <img class="resp" src="{{ product.thumbnail }}" alt="{{ product.name }}"> <!-- Tampilkan gambar produk -->
+      {% else %}
+        <p class="muted">No image</p> <!-- Pesan jika tidak ada gambar -->
+      {% endif %}
+    </div>
+
+    <div class="card"> <!-- Card detail produk -->
+      <p><b>ID:</b> {{ product.id }}</p> <!-- ID produk -->
+      <p><b>Category:</b> {{ product.category }}</p> <!-- Kategori produk -->
+      <p><b>Price:</b> Rp {{ product.price }}</p> <!-- Harga produk -->
+      <p><b>Featured:</b> {{ product.is_featured|yesno:"Yes,No" }}</p> <!-- Status unggulan -->
+      <p><b>Image URL:</b>
+        {% if product.thumbnail %} <!-- Jika ada gambar produk -->
+          <a href="{{ product.thumbnail }}" target="_blank">{{ product.thumbnail }}</a> <!-- Link gambar -->
+        {% else %}
+          <span class="muted">—</span> <!-- Tanda jika tidak ada gambar -->
+        {% endif %}
+      </p>
+      <p><b>Description:</b><br>{{ product.description|default:"(no description)" }}</p> <!-- Deskripsi produk -->
+    </div>
+  </div>
+{% endblock content %} <!-- Akhir blok konten utama -->

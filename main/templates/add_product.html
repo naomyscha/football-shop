@@ -1,23 +1,22 @@
-{% extends 'base.html' %}
-{% block content %}
-  <h2>Add Product</h2>
+{% extends 'base.html' %} <!-- Menggunakan template base.html sebagai dasar -->
 
-  {# tampilkan messages kalau ada #}
-  {% if messages %}
+{% block title %}Soccerella · Add Product{% endblock title %} <!-- Judul halaman -->
+
+{% block content %} <!-- Awal blok konten utama -->
+  <a class="btn" href="{% url 'main:home' %}">← Back</a> <!-- Tombol kembali ke halaman utama -->
+  <h2 style="margin-top:10px;">Add Product</h2> <!-- Judul form tambah produk -->
+
+  {% if messages %} <!-- Jika ada pesan -->
     <ul>
-      {% for m in messages %}
-        <li>{{ m }}</li>
+      {% for m in messages %} <!-- Loop setiap pesan -->
+        <li>{{ m }}</li> <!-- Tampilkan pesan -->
       {% endfor %}
     </ul>
   {% endif %}
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
+  <form method="post" class="card" style="margin-top:10px;"> <!-- Form tambah produk -->
+    {% csrf_token %} <!-- Token CSRF untuk keamanan -->
+    {{ form.as_p }} <!-- Render form sebagai paragraf -->
+    <button type="submit" class="btn btn-primary">Save</button> <!-- Tombol submit -->
   </form>
-
-  <p style="margin-top:12px;">
-    <a href="{% url 'main:home' %}">← Back</a>
-  </p>
-{% endblock %}
+{% endblock content %} <!-- Akhir blok konten utama -->
