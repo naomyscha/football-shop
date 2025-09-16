@@ -41,3 +41,7 @@ Saya memastikan `ALLOWED_HOSTS` dan `CSRF_TRUSTED_ORIGINS` sudah berisi domain P
 Ka Fahri di tutorial 2 menurut saya sangat jelas dalam menjelaskan materi dan sabar ketika menjawab pertanyaan. Penjelasannya runtut sehingga mudah dipahami, bahkan untuk saya yang sempat tertinggal karena ada dispensasi. Selain itu, Ka Fahri juga responsif ketika ada kendala teknis, sehingga saya bisa tetap mengikuti progres tugas dengan baik. Terima kasih banyak atas bimbingannya Kak! 🙏
 
 ## Uji Coba Data Delivery dengan Postman
+<img width="1461" height="826" alt="Screenshot 2025-09-16 at 09 27 06" src="https://github.com/user-attachments/assets/f93b72b3-ce83-4deb-a593-f4457514d0c9" />
+<img width="1462" height="836" alt="Screenshot 2025-09-16 at 09 27 24" src="https://github.com/user-attachments/assets/e6cc2665-1ede-401f-a776-bf0e30425c2e" />
+<img width="1467" height="836" alt="Screenshot 2025-09-16 at 09 30 45" src="https://github.com/user-attachments/assets/818d846a-d0be-48fa-86da-701b1c3c2d7c" />
+<img width="1466" height="836" alt="Screenshot 2025-09-16 at 09 30 58" src="https://github.com/user-attachments/assets/611bb843-fcec-412d-bec1-9bcafb3262ed" />
