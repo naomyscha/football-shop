@@ -1,38 +1,43 @@
-# Football Shop — Tugas 2 PBP
-Link PWS: [https://<username-SSO>-footballshop.pbp.cs.ui.ac.id/](https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id/)
+# Football Shop — Tugas 3 PBP
+Link PWS: https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id/
 
-## Step-by-Step Inisiasi Proyek Django
-Saya membuat direktori baru dengan nama FootballShop. Lalu membuat file requirements.txt yang berisi django, gunicorn, whitenoise, psycopg2-binary, requests, dan urllib3. Setelah itu saya menjalankan virtual environment, install dependencies dengan perintah pip install -r requirements.txt, dan membuat proyek Django dengan perintah django-admin startproject shop .
+## Mengapa kita memerlukan Data Delivery
+Data delivery penting karena memungkinkan backend menyajikan data dalam format yang bisa diakses oleh berbagai jenis klien, tidak hanya HTML untuk browser. Dengan adanya data delivery (misalnya dalam bentuk XML atau JSON), aplikasi mobile, website, maupun layanan pihak ketiga bisa menggunakan data yang sama. Hal ini membuat platform lebih fleksibel, interoperabel, dan mudah diintegrasikan. Data delivery juga memudahkan pengujian menggunakan Postman atau cURL, serta membuat sistem lebih skalabel karena satu sumber data bisa diakses oleh banyak client.
 
-Menjalankan Server
-Di settings.py saya menambahkan ALLOWED_HOSTS = ["localhost", "127.0.0.1"]. Setelah itu saya menjalankan server dengan perintah python manage.py runserver.
+## XML vs JSON
+XML dan JSON sama-sama bisa digunakan untuk pertukaran data, tetapi JSON lebih sering dipakai dalam API modern. JSON lebih ringkas, lebih mudah dibaca oleh manusia, parsing-nya lebih cepat, dan secara default didukung oleh JavaScript maupun bahasa pemrograman lain. XML masih berguna ketika dibutuhkan skema atau struktur data kompleks dengan atribut dan namespace, tetapi cenderung lebih verbose. Karena alasan kepraktisan dan efisiensi, JSON lebih populer dibandingkan XML untuk kebutuhan web development sehari-hari.
 
-Membuat Aplikasi main
-Saya membuat aplikasi baru bernama main dengan perintah python manage.py startapp main. Lalu saya menambahkan "main" ke dalam INSTALLED_APPS di settings.py.
+## Fungsi is_valid() pada Form Django
+Method is_valid() digunakan untuk melakukan validasi data pada form Django. Fungsi ini mengecek apakah semua field form sesuai dengan aturan yang sudah didefinisikan di model atau form (misalnya tipe data, field wajib, panjang maksimal). Jika valid, maka data akan tersedia dalam form.cleaned_data dan siap disimpan ke database. Jika tidak valid, maka error akan muncul di form.errors. Validasi server-side ini sangat penting untuk menjaga konsistensi data dan mencegah input berbahaya yang bisa merusak sistem.
 
-Membuat Model
-Di main/models.py saya membuat model Product dengan atribut name (CharField), price (IntegerField), description (TextField), thumbnail (URLField), category (CharField), dan is_featured (BooleanField). Setelah itu saya menjalankan python manage.py makemigrations dan python manage.py migrate agar tabel terbentuk di database.
+## Pentingnya csrf_token pada Form
+csrf_token adalah token keamanan yang melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF). Token ini memastikan bahwa request POST yang masuk benar-benar berasal dari form di aplikasi kita, bukan dari situs luar yang mencoba menyalahgunakan session user. Jika kita tidak menambahkan csrf_token, penyerang bisa membuat form di situs mereka yang diam-diam mengirim request ke server kita dengan menggunakan cookie login korban, sehingga bisa mengubah data tanpa sepengetahuan user. Dengan adanya token unik yang dicek setiap request, Django menolak request palsu dan mencegah serangan CSRF.
 
-Membuat View dan Template
-Di main/views.py saya membuat fungsi home yang mengembalikan context berisi app_name, student_name, student_class, dan daftar produk dari Product.objects.all(). Fungsi ini me-render template main.html yang menampilkan nama aplikasi, nama, kelas, serta daftar produk.
-
-Routing
-Di shop/urls.py saya mengarahkan path '' ke main.urls. Lalu di main/urls.py saya menambahkan path '' ke fungsi home. Dengan begitu halaman utama bisa diakses.
-
-Deployment ke PWS
-Saya push repository ke GitHub, hubungkan dengan PWS, lalu set environment variables untuk database PostgreSQL. Setelah itu saya menjalankan python manage.py migrate dan python manage.py collectstatic --noinput di PWS. Aplikasi akhirnya bisa diakses di http://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id/
-
-## Bagan Alur (MVT)
-![rooting](https://github.com/user-attachments/assets/c27121f3-b67c-4213-a878-7c192a611976)
-
-## Peran settings.py
-settings.py adalah pusat konfigurasi proyek Django. Semua pengaturan inti ada di sini, mulai dari daftar aplikasi yang dipakai (INSTALLED\_APPS), koneksi ke database, lokasi file template dan file statis, middleware, sampai pengaturan keamanan seperti SECRET\_KEY, DEBUG, dan ALLOWED\_HOSTS. File ini juga menyimpan pengaturan bahasa, timezone, serta konfigurasi tambahan lain. Tanpa settings.py, Django tidak tahu bagaimana cara menjalankan proyek, sehingga bisa dibilang file ini adalah jantung aplikasi Django.
-
-## Cara migrasi Database di Django
-migrasi database di Django bekerja dengan cara mencatat perubahan struktur model Python ke dalam file migrasi, lalu menerapkannya ke database. Pertama, saat kita menambah atau mengubah field pada models.py, Django tidak langsung mengubah tabel di database. Kita harus menjalankan perintah python manage.py makemigrations untuk membuat file migrasi yang berisi instruksi perubahan. Setelah itu, perintah python manage.py migrate mengeksekusi instruksi tersebut ke database sehingga tabel dan kolom benar-benar berubah sesuai model. Dengan sistem ini, pengembang bisa menjaga konsistensi kode dan database serta melacak riwayat perubahan.
-
-## Alasan Django beginner-friendly
-Django sering dipilih sebagai framework pertama untuk belajar karena sifatnya lengkap dan ramah pemula. Django sudah menyediakan banyak fitur bawaan (batteries included) seperti ORM untuk database, sistem template, autentikasi, dan pengaturan keamanan, jadi pemula tidak perlu menambahkan modul tambahan hanya untuk fitur dasar. Selain itu, Django menggunakan bahasa Python yang sintaksnya sederhana dan mudah dibaca, sehingga memudahkan mahasiswa atau pengembang baru memahami logika program. Struktur proyeknya juga rapi dan mendorong praktik terbaik (seperti pemisahan model, view, dan template). Hal-hal ini membuat Django jadi pilihan ideal untuk belajar dasar pengembangan aplikasi web sebelum beralih ke framework lain yang lebih kompleks.
+## Step-by-Step Implementasi Tugas 3
+**Menambahkan Data Delivery Views**
+Saya menambahkan empat fungsi baru di `main/views.py` untuk mengembalikan data dalam format XML dan JSON. Fungsi `show_xml` dan `show_json` mengembalikan semua data `Product` menggunakan `serializers.serialize`. Sedangkan `show_xml_by_id` dan `show_json_by_id` mengembalikan data berdasarkan `id` tertentu dengan filter `pk=id`.
+**Routing**
+Di `main/urls.py` saya menambahkan path berikut:
+* `path("xml/", show_xml, name="show_xml")`
+* `path("json/", show_json, name="show_json")`
+* `path("xml/<int:id>/", show_xml_by_id, name="show_xml_by_id")`
+* `path("json/<int:id>/", show_json_by_id, name="show_json_by_id")`
+Dengan begitu, saya bisa mengakses data dalam berbagai format di URL `/xml/`, `/json/`, `/xml/<id>/`, dan `/json/<id>/`.
+**Membuat Dashboard Produk**
+Saya memperbarui fungsi `home()` di `main/views.py` untuk mengambil semua objek `Product` dan merender `main.html`. Di dalam `main.html`, produk ditampilkan dalam bentuk grid card. Setiap card menampilkan nama, kategori, harga, dan memiliki tombol **Detail**. Saya juga menambahkan tombol **+ Add Product** di header, serta tombol **XML** dan **JSON** agar mudah mengakses endpoint data delivery.
+**Form Tambah Produk**
+Saya membuat `ProductForm` berbasis `ModelForm` di `main/forms.py`. Kemudian menambahkan view `add_product()` yang menangani GET dan POST:
+* Jika GET → render form kosong.
+* Jika POST dan `form.is_valid()` → simpan produk baru, lalu redirect ke halaman utama dengan pesan sukses.
+Form ini dirender di template `add_product.html` menggunakan `{{ form.as_p }}` dan `{% csrf_token %}`.
+**Halaman Detail Produk**
+Saya menambahkan view `product_detail()` yang mengambil satu produk berdasarkan `id` menggunakan `get_object_or_404`. View ini merender `detail.html` yang menampilkan informasi lengkap produk seperti nama, harga, kategori, deskripsi, dan gambar.
+**Uji Coba dengan Postman**
+Saya menguji keempat URL data delivery (`/xml/`, `/json/`, `/xml/<id>/`, `/json/<id>/`) menggunakan Postman, lalu mengambil screenshot hasil respons dan menambahkannya ke README.
+**Deployment ke PWS**
+Saya memastikan `ALLOWED_HOSTS` dan `CSRF_TRUSTED_ORIGINS` sudah berisi domain PWS saya. Setelah itu, saya melakukan `git add .`, `git commit`, dan `git push pws master`. Kemudian saya menjalankan `python manage.py migrate` dan `python manage.py collectstatic --noinput` di PWS. Aplikasi berhasil dideploy dan dapat diakses di [https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id/](https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id/).
 
 ## Feedback Asdos
-Ka Fahri adalah asdos yang sangat helpful! Beliau selalu responsif dan sangat membantu, terutama selama saya menjalani masa dispensasi. Berkat bimbingan Ka Fahri, saya tidak merasa ada gap knowledge sama sekali dan tetap bisa mengikuti materi dengan baik.
+Ka Fahri di tutorial 2 menurut saya sangat jelas dalam menjelaskan materi dan sabar ketika menjawab pertanyaan. Penjelasannya runtut sehingga mudah dipahami, bahkan untuk saya yang sempat tertinggal karena ada dispensasi. Selain itu, Ka Fahri juga responsif ketika ada kendala teknis, sehingga saya bisa tetap mengikuti progres tugas dengan baik. Terima kasih banyak atas bimbingannya Kak! 🙏
+
+## Uji Coba Data Delivery dengan Postman
