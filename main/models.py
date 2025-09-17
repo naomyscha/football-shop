@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User  # + tambahkan ini
 
 # Model Product untuk menyimpan data produk di database
 class Product(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # + kolom relasi User
     name = models.CharField(max_length=120)          # Nama produk (wajib)
     price = models.IntegerField()                    # Harga produk (wajib)
     description = models.TextField()                 # Deskripsi produk (wajib)

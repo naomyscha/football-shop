@@ -6,8 +6,8 @@ from .models import Product
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     # Kolom yang ditampilkan di list view admin
-    list_display = ("id", "name", "price", "category", "is_featured")
+    list_display = ("id", "name", "price", "category", "is_featured", "user")
     # Tambah filter berdasarkan kategori & status featured
     list_filter = ("category", "is_featured")
     # Aktifkan pencarian berdasarkan nama dan kategori
-    search_fields = ("name", "category")
+    search_fields = ("name", "category", "user__username")
