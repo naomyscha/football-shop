@@ -5,6 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}Soccerella{% endblock title %}</title>
+
+  <!-- Tailwind untuk halaman auth/form -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     :root{
       --bg:#fff8fc; --text:#333; --card:#fff; --border:#f4cfe0; --brand:#f08bb6;
@@ -12,78 +16,59 @@
     *{box-sizing:border-box}
     body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)}
 
-    /* NAVBAR dasar */
+    /* ===== NAVBAR (dipakai oleh navbar.html) ===== */
     .nav{background:#fff; border-bottom:1px solid var(--border); padding:10px 16px;}
     .nav a{color:#6b355f; text-decoration:none; font-weight:700}
     .brand{letter-spacing:.2px}
     .wrap{max-width:900px; margin:18px auto; padding:0 16px;}
     .nav-row{display:flex; align-items:center; justify-content:space-between; position:relative;}
-
-    /* Actions (desktop) */
     .nav-actions{display:flex; gap:8px; align-items:center;}
-
-    /* Tombol hamburger (mobile only) */
     .hamburger{display:none; background:#fff; border:1px solid var(--border); border-radius:10px; padding:6px; cursor:pointer}
     .hamburger span{display:block; width:20px; height:2px; background:#6b355f; margin:3px 0; border-radius:2px}
 
-    /* Komponen umum */
-    .panel{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px;}
-    .btn{display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid var(--border); text-decoration:none; color:#6b355f; font-weight:600}
-    .btn-primary{background:var(--brand); color:#fff; border-color:#ee7eb0}
-    .grid{display:grid; gap:12px}
-    @media(min-width:700px){ .grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)} }
-    .card{border:1px solid var(--border); border-radius:10px; padding:12px; background:#fff}
-    .muted{color:#666; font-size:.95rem}
-    img.resp{max-width:100%; height:auto; display:block; margin:0 auto}
-
-    /* ====== RESPONSIVE NAVBAR ====== */
-    /* Mobile (≤700px): hamburger tampil, menu jadi dropdown */
+    /* Mobile (≤700px): actions jadi dropdown */
     @media (max-width:700px){
       .hamburger{display:inline-flex; align-items:center; justify-content:center;}
       .nav-actions{
-        display:none;         /* disembunyikan default */
-        position:absolute;
-        right:0; top:48px;
-        background:#fff;
-        border:1px solid var(--border);
-        border-radius:12px;
-        padding:10px;
-        box-shadow:0 6px 24px rgba(0,0,0,.06);
-        flex-direction:column;
-        gap:8px;
-        min-width: 220px;
+        display:none;
+        position:absolute; right:0; top:48px; z-index:50;
+        background:#fff; border:1px solid var(--border); border-radius:12px;
+        padding:10px; box-shadow:0 6px 24px rgba(0,0,0,.06);
+        flex-direction:column; gap:8px; min-width:220px;
       }
-      .nav-actions.open{display:flex;} /* toggle saat hamburger ditekan */
+      .nav-actions.open{display:flex;}
       .nav-actions .hi{padding:6px 8px}
     }
-
-    /* Desktop (≥701px): menu selalu terlihat, hamburger disembunyikan */
     @media (min-width:701px){
       .nav-actions{display:flex;}
       .hamburger{display:none;}
     }
 
-    /* --- action floating pada card --- */
-    .card.card-has-actions{ position:relative; }
-    .card-actions {
-      position: absolute;
-      bottom: 6px;
-      left: 6px;
-      display: flex;
-      gap: 6px;
-      z-index: 1;
-      background: rgba(255,255,255,0.8); /* biar ada sedikit kontras */
-      padding: 4px 6px;
-      border-radius: 8px;
+    /* ===== KOMponen umum ===== */
+    .panel{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px;}
+    .btn{display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid var(--border); text-decoration:none; color:#6b355f; font-weight:600}
+    .btn-primary{background:var(--brand); color:#fff; border-color:#ee7eb0}
+    .muted{color:#666; font-size:.95rem}
+    .card{border:1px solid var(--border); border-radius:10px; padding:12px; background:#fff}
+    img.resp{max-width:100%; height:auto; display:block; margin:0 auto}
+
+    /* Grid responsif: 1 → 2 → 3 kolom */
+    .grid{display:grid; gap:12px}
+    @media (min-width:520px){ .grid-2{grid-template-columns:repeat(2,1fr)} }
+    @media (min-width:900px){ .grid-3{grid-template-columns:repeat(3,1fr)} }
+
+    /* ===== Aksi pada card (Edit/Delete) — footer rapi ===== */
+    .card-footer{
+      margin-top:10px; padding-top:10px; border-top:1px solid var(--border);
+      display:flex; gap:6px; justify-content:flex-end;
     }
     .btn-xs{ padding:6px 8px; font-size:.85rem; border-radius:999px; }
     .btn-danger{ border-color:#f4a3a3; color:#b71c1c; background:#fff; }
-
   </style>
+
   {% block extra_head %}{% endblock extra_head %}
 </head>
 <body>
-  {# >>> GANTI nav lama dengan include berikut <<< #}
   {% include 'navbar.html' %}
 
   <main class="wrap">
