@@ -1,35 +1,52 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Soccerella · Products{% endblock title %}
+
 {% block content %}
-  <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:12px;">
+  <!-- Header -->
+  <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:14px;">
     <div>
       <h2 style="margin:0 0 6px;">{{ app_name }}</h2>
-      <div class="muted">
-        Logged in as: <b>{{ username }}</b> · Last login: {{ last_login }}
-      </div>
-      <div style="margin-top:8px; display:flex; gap:6px;">
-        <a class="btn" href="{% url 'main:show_xml' %}">XML</a>
-        <a class="btn" href="{% url 'main:show_json' %}">JSON</a>
-      </div>
+      <div class="muted">Logged in as: <b>{{ username }}</b> · Last login: {{ last_login }}</div>
     </div>
     <a class="btn btn-primary" href="{% url 'main:add_product' %}">+ Add Product</a>
   </header>
 
-  {% if products %}
-    <div class="grid grid-3">
-      {% for p in products %}
-        <article class="card">
-          {% if p.thumbnail %}<img class="resp" src="{{ p.thumbnail }}" alt="{{ p.name }}">{% endif %}
-          <h3 style="margin:.6rem 0 .3rem;">{{ p.name }}</h3>
-          <div class="muted">Category: {{ p.category }}</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-            <div style="font-weight:700;">Rp {{ p.price }}</div>
-            <a class="btn" href="{% url 'main:product_detail' p.id %}">Detail</a>
-          </div>
-        </article>
-      {% endfor %}
-    </div>
+  <!-- Empty state -->
+  {% if not products %}
+    <section class="card" style="text-align:center; padding:24px;">
+      <img src="{% static 'image/no-products.png' %}" alt="No products" style="width:112px; height:112px; object-fit:contain; display:block; margin:0 auto 10px;">
+      <p class="muted" style="margin-bottom:10px;">Belum ada product terdaftar.</p>
+      <a class="btn btn-primary" href="{% url 'main:add_product' %}">+ Add Product</a>
+    </section>
   {% else %}
-    <p class="muted">Belum ada produk. Klik <b>Add Product</b> untuk menambahkan.</p>
+
+  <!-- Product grid -->
+  <div class="grid grid-3">
+    {% for p in products %}
+      <article class="card card-has-actions">
+        {% if p.user == request.user %}
+          <div class="card-actions">
+            <a class="btn btn-xs" href="{% url 'main:edit_product' p.id %}">Edit</a>
+            <a class="btn btn-xs btn-danger"
+              href="{% url 'main:delete_product' p.id %}"
+              onclick="return confirm('Hapus {{ p.name }}?');">Delete</a>
+          </div>
+        {% endif %}
+
+        {% if p.thumbnail %}
+          <img class="resp" src="{{ p.thumbnail }}" alt="{{ p.name }}">
+        {% endif %}
+
+        <h3 style="margin:.6rem 0 .3rem;">{{ p.name }}</h3>
+        <div class="muted">Category: {{ p.category }}</div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+          <div style="font-weight:700;">Rp {{ p.price }}</div>
+          <a class="btn" href="{% url 'main:product_detail' p.id %}">Detail</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
   {% endif %}
 {% endblock content %}

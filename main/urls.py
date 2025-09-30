@@ -4,7 +4,8 @@ from .views import (          # Import semua view yang digunakan
     show_xml, show_json,      # Data produk dalam XML/JSON
     show_xml_by_id, show_json_by_id, # Data produk by id dalam XML/JSON
     add_product, product_detail, # Form tambah & detail produk
-    register, login_user, logout_user
+    register, login_user, logout_user,
+    edit_product, delete_product,  # Edit & hapus produk
 )
 
 app_name = "main"             # Namespace aplikasi
@@ -21,4 +22,6 @@ urlpatterns = [
     path('register/', register, name='register'),
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
+    path("product/<int:id>/edit/", edit_product, name="edit_product"),    
+    path("product/<int:id>/delete/", delete_product, name="delete_product"),  
 ]

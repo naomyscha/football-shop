@@ -1,54 +1,97 @@
-{% load static %} <!-- Memuat tag static Django -->
-<!DOCTYPE html> <!-- Deklarasi tipe dokumen HTML -->
-<html lang="id"> <!-- Awal tag HTML, bahasa Indonesia -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8" /> <!-- Set karakter encoding -->
-  <meta name="viewport" content="width=device-width, initial-scale=1" /> <!-- Responsive viewport -->
-  <title>{% block title %}Soccerella{% endblock title %}</title> <!-- Judul halaman, bisa diubah oleh child template -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Soccerella{% endblock title %}</title>
   <style>
     :root{
-      --bg:#fff8fc; --text:#333; --card:#fff; --border:#f4cfe0; --brand:#f08bb6; /* Variabel warna */
+      --bg:#fff8fc; --text:#333; --card:#fff; --border:#f4cfe0; --brand:#f08bb6;
     }
-    *{box-sizing:border-box} /* Semua elemen menggunakan border-box */
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)} /* Style body */
-    .nav{background:#fff; border-bottom:1px solid var(--border); padding:10px 16px;} /* Style navbar */
-    .nav a{color:#6b355f; text-decoration:none; font-weight:700} /* Style link navbar */
-    .wrap{max-width:900px; margin:18px auto; padding:0 16px;} /* Wrapper konten */
-    .panel{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px;} /* Panel utama */
-    .btn{display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid var(--border); text-decoration:none; color:#6b355f; font-weight:600} /* Style tombol */
-    .btn-primary{background:var(--brand); color:#fff; border-color:#ee7eb0} /* Style tombol utama */
-    .grid{display:grid; gap:12px} /* Style grid */
-    @media(min-width:700px){ .grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)} } /* Responsive grid */
-    .card{border:1px solid var(--border); border-radius:10px; padding:12px; background:#fff} /* Style card */
-    .muted{color:#666; font-size:.95rem} /* Style teks muted */
-    img.resp{max-width:100%; height:auto; display:block; margin:0 auto} /* Style gambar responsif */
+    *{box-sizing:border-box}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)}
+
+    /* NAVBAR dasar */
+    .nav{background:#fff; border-bottom:1px solid var(--border); padding:10px 16px;}
+    .nav a{color:#6b355f; text-decoration:none; font-weight:700}
+    .brand{letter-spacing:.2px}
+    .wrap{max-width:900px; margin:18px auto; padding:0 16px;}
+    .nav-row{display:flex; align-items:center; justify-content:space-between; position:relative;}
+
+    /* Actions (desktop) */
+    .nav-actions{display:flex; gap:8px; align-items:center;}
+
+    /* Tombol hamburger (mobile only) */
+    .hamburger{display:none; background:#fff; border:1px solid var(--border); border-radius:10px; padding:6px; cursor:pointer}
+    .hamburger span{display:block; width:20px; height:2px; background:#6b355f; margin:3px 0; border-radius:2px}
+
+    /* Komponen umum */
+    .panel{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px;}
+    .btn{display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid var(--border); text-decoration:none; color:#6b355f; font-weight:600}
+    .btn-primary{background:var(--brand); color:#fff; border-color:#ee7eb0}
+    .grid{display:grid; gap:12px}
+    @media(min-width:700px){ .grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)} }
+    .card{border:1px solid var(--border); border-radius:10px; padding:12px; background:#fff}
+    .muted{color:#666; font-size:.95rem}
+    img.resp{max-width:100%; height:auto; display:block; margin:0 auto}
+
+    /* ====== RESPONSIVE NAVBAR ====== */
+    /* Mobile (≤700px): hamburger tampil, menu jadi dropdown */
+    @media (max-width:700px){
+      .hamburger{display:inline-flex; align-items:center; justify-content:center;}
+      .nav-actions{
+        display:none;         /* disembunyikan default */
+        position:absolute;
+        right:0; top:48px;
+        background:#fff;
+        border:1px solid var(--border);
+        border-radius:12px;
+        padding:10px;
+        box-shadow:0 6px 24px rgba(0,0,0,.06);
+        flex-direction:column;
+        gap:8px;
+        min-width: 220px;
+      }
+      .nav-actions.open{display:flex;} /* toggle saat hamburger ditekan */
+      .nav-actions .hi{padding:6px 8px}
+    }
+
+    /* Desktop (≥701px): menu selalu terlihat, hamburger disembunyikan */
+    @media (min-width:701px){
+      .nav-actions{display:flex;}
+      .hamburger{display:none;}
+    }
+
+    /* --- action floating pada card --- */
+    .card.card-has-actions{ position:relative; }
+    .card-actions {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      display: flex;
+      gap: 6px;
+      z-index: 1;
+      background: rgba(255,255,255,0.8); /* biar ada sedikit kontras */
+      padding: 4px 6px;
+      border-radius: 8px;
+    }
+    .btn-xs{ padding:6px 8px; font-size:.85rem; border-radius:999px; }
+    .btn-danger{ border-color:#f4a3a3; color:#b71c1c; background:#fff; }
+
   </style>
-  {% block extra_head %}{% endblock extra_head %} <!-- Blok tambahan di head -->
+  {% block extra_head %}{% endblock extra_head %}
 </head>
 <body>
-  <nav class="nav">
-  <div class="wrap" style="display:flex; align-items:center; justify-content:space-between;">
-    <a href="{% url 'main:home' %}">🎀 SOCCERELLA</a>
-    <div style="display:flex; gap:8px; align-items:center;">
-      <a class="btn" href="{% url 'main:show_xml' %}">XML</a>
-      <a class="btn" href="{% url 'main:show_json' %}">JSON</a>
-      {% if request.user.is_authenticated %}
-        <span class="muted">Hi, {{ request.user.username }}</span>
-        <a class="btn" href="{% url 'main:logout' %}">Logout</a>
-      {% else %}
-        <a class="btn" href="{% url 'main:login' %}">Login</a>
-        <a class="btn btn-primary" href="{% url 'main:register' %}">Register</a>
-      {% endif %}
-    </div>
-  </div>
-</nav>
+  {# >>> GANTI nav lama dengan include berikut <<< #}
+  {% include 'navbar.html' %}
 
-  <main class="wrap"> <!-- Konten utama -->
+  <main class="wrap">
     <section class="panel">
-      {% block content %}{% endblock content %} <!-- Blok konten, diisi oleh child template -->
+      {% block content %}{% endblock content %}
     </section>
   </main>
 
-  {% block extra_scripts %}{% endblock extra_scripts %} <!-- Blok tambahan untuk script -->
+  {% block extra_scripts %}{% endblock extra_scripts %}
 </body>
 </html>

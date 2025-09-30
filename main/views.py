@@ -50,7 +50,7 @@ def add_product(request):
 # Fungsi view untuk detail produk
 @login_required(login_url="/login/")
 def product_detail(request, id):
-    product = get_object_or_404(Product, pk=id, user=request.user)  # hanya boleh akses milik sendiri
+    product = get_object_or_404(Product, pk=id)  # hanya boleh akses milik sendiri
     return render(request, "detail.html", {"product": product})
 
 # Fungsi view untuk menampilkan semua produk dalam format XML
@@ -113,3 +113,22 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+@login_required(login_url="/login/")
+def edit_product(request, id):
+    # Pastikan hanya pemilik yang bisa edit
+    product = get_object_or_404(Product, pk=id, user=request.user)
+    form = ProductForm(request.POST or None, instance=product)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Product updated.")
+        return redirect("main:home")
+    return render(request, "edit_product.html", {"form": form})
+
+@login_required(login_url="/login/")
+def delete_product(request, id):
+    # Pastikan hanya pemilik yang bisa delete
+    product = get_object_or_404(Product, pk=id, user=request.user)
+    product.delete()
+    messages.success(request, "Product deleted.")
+    return HttpResponseRedirect(reverse("main:home"))

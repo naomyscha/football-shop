@@ -1,15 +1,12 @@
 {% extends 'base.html' %}
-
-{% block title %}Add Product · Soccerella{% endblock title %}
+{% block title %}Edit Product · Soccerella{% endblock title %}
 
 {% block content %}
-  <!-- Header -->
   <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
     <a class="btn" href="{% url 'main:home' %}">← Back</a>
-    <h2 style="margin:0;">Add Product</h2>
+    <h2 style="margin:0;">Edit Product</h2>
   </div>
 
-  <!-- Flash messages -->
   {% if messages %}
     <ul class="card" style="margin:0 0 12px; list-style:none; padding:10px;">
       {% for m in messages %}
@@ -18,21 +15,17 @@
     </ul>
   {% endif %}
 
-  <!-- Form -->
   <form method="post" class="card" style="margin-top:6px;">
     {% csrf_token %}
-
-    {# Jika ingin menampilkan error non-field dengan jelas #}
     {% if form.non_field_errors %}
       <div style="border:1px solid #f4a3a3; background:#fff4f4; color:#b71c1c; padding:8px 10px; border-radius:8px; margin-bottom:10px;">
         {{ form.non_field_errors }}
       </div>
     {% endif %}
-
     {{ form.as_p }}
 
     <div style="display:flex; gap:8px; margin-top:8px;">
-      <button type="submit" class="btn btn-primary">Save</button>
+      <button type="submit" class="btn btn-primary">Update</button>
       <a href="{% url 'main:home' %}" class="btn">Cancel</a>
     </div>
   </form>
