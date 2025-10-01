@@ -1,47 +1,64 @@
-# Football Shop — Tugas 3 PBP
+# Football Shop — Tugas 4 PBP
 Link PWS: https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id/
 
-## Mengapa kita memerlukan Data Delivery
-Data delivery penting karena memungkinkan backend menyajikan data dalam format yang bisa diakses oleh berbagai jenis klien, tidak hanya HTML untuk browser. Dengan adanya data delivery (misalnya dalam bentuk XML atau JSON), aplikasi mobile, website, maupun layanan pihak ketiga bisa menggunakan data yang sama. Hal ini membuat platform lebih fleksibel, interoperabel, dan mudah diintegrasikan. Data delivery juga memudahkan pengujian menggunakan Postman atau cURL, serta membuat sistem lebih skalabel karena satu sumber data bisa diakses oleh banyak client.
+# 1. Urutan prioritas pengambilan CSS selector
+Jika terdapat beberapa CSS selector yang mengatur elemen yang sama, maka browser akan menentukan prioritas dengan aturan yang disebut specificity. Urutannya adalah sebagai berikut:
+- Paling tinggi adalah aturan yang menggunakan !important
+- Selanjutnya adalah inline style, yaitu CSS yang ditulis langsung di atribut elemen HTML.
+- Berikutnya adalah selector berbasis ID.
+- Setelah itu selector berbasis class, atribut, atau pseudo-class (seperti :hover).
+- Paling rendah adalah selector berbasis tag/elemen dan pseudo-element (seperti p, h1, atau ::before).
 
-## XML vs JSON
-XML dan JSON sama-sama bisa digunakan untuk pertukaran data, tetapi JSON lebih sering dipakai dalam API modern. JSON lebih ringkas, lebih mudah dibaca oleh manusia, parsing-nya lebih cepat, dan secara default didukung oleh JavaScript maupun bahasa pemrograman lain. XML masih berguna ketika dibutuhkan skema atau struktur data kompleks dengan atribut dan namespace, tetapi cenderung lebih verbose. Karena alasan kepraktisan dan efisiensi, JSON lebih populer dibandingkan XML untuk kebutuhan web development sehari-hari.
+Jika terdapat selector dengan tingkat prioritas yang sama, maka aturan yang ditulis paling akhir di dalam CSS akan dipakai.
 
-## Fungsi is_valid() pada Form Django
-Method is_valid() digunakan untuk melakukan validasi data pada form Django. Fungsi ini mengecek apakah semua field form sesuai dengan aturan yang sudah didefinisikan di model atau form (misalnya tipe data, field wajib, panjang maksimal). Jika valid, maka data akan tersedia dalam form.cleaned_data dan siap disimpan ke database. Jika tidak valid, maka error akan muncul di form.errors. Validasi server-side ini sangat penting untuk menjaga konsistensi data dan mencegah input berbahaya yang bisa merusak sistem.
+# 2. Pentingnya responsive design
+Responsive design adalah konsep desain web yang memastikan tampilan aplikasi menyesuaikan diri dengan berbagai ukuran layar, baik pada ponsel, tablet, maupun komputer. Konsep ini penting karena mayoritas pengguna internet saat ini mengakses melalui perangkat mobile. Dengan desain yang responsif, pengalaman pengguna menjadi lebih baik, mudah diakses, dan tidak memerlukan pengembangan aplikasi terpisah untuk setiap perangkat.
 
-## Pentingnya csrf_token pada Form
-csrf_token adalah token keamanan yang melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF). Token ini memastikan bahwa request POST yang masuk benar-benar berasal dari form di aplikasi kita, bukan dari situs luar yang mencoba menyalahgunakan session user. Jika kita tidak menambahkan csrf_token, penyerang bisa membuat form di situs mereka yang diam-diam mengirim request ke server kita dengan menggunakan cookie login korban, sehingga bisa mengubah data tanpa sepengetahuan user. Dengan adanya token unik yang dicek setiap request, Django menolak request palsu dan mencegah serangan CSRF.
+Sebagai contoh, aplikasi marketplace modern seperti Tokopedia atau Shopee sudah menerapkan responsive design. Tampilan mereka otomatis menyesuaikan ukuran layar sehingga nyaman dipakai di perangkat apa pun. Sebaliknya, beberapa website lama yang masih menggunakan layout berbasis tabel dengan lebar tetap belum menerapkan responsive design. Hasilnya, pengguna harus melakukan scroll horizontal di ponsel, tombol terlihat kecil, dan navigasi menjadi sulit.
 
-## Step-by-Step Implementasi Tugas 3
-**Menambahkan Data Delivery Views**
-Saya menambahkan empat fungsi baru di `main/views.py` untuk mengembalikan data dalam format XML dan JSON. Fungsi `show_xml` dan `show_json` mengembalikan semua data `Product` menggunakan `serializers.serialize`. Sedangkan `show_xml_by_id` dan `show_json_by_id` mengembalikan data berdasarkan `id` tertentu dengan filter `pk=id`.
-**Routing**
-Di `main/urls.py` saya menambahkan path berikut:
-* `path("xml/", show_xml, name="show_xml")`
-* `path("json/", show_json, name="show_json")`
-* `path("xml/<int:id>/", show_xml_by_id, name="show_xml_by_id")`
-* `path("json/<int:id>/", show_json_by_id, name="show_json_by_id")`
-Dengan begitu, saya bisa mengakses data dalam berbagai format di URL `/xml/`, `/json/`, `/xml/<id>/`, dan `/json/<id>/`.
-**Membuat Dashboard Produk**
-Saya memperbarui fungsi `home()` di `main/views.py` untuk mengambil semua objek `Product` dan merender `main.html`. Di dalam `main.html`, produk ditampilkan dalam bentuk grid card. Setiap card menampilkan nama, kategori, harga, dan memiliki tombol **Detail**. Saya juga menambahkan tombol **+ Add Product** di header, serta tombol **XML** dan **JSON** agar mudah mengakses endpoint data delivery.
-**Form Tambah Produk**
-Saya membuat `ProductForm` berbasis `ModelForm` di `main/forms.py`. Kemudian menambahkan view `add_product()` yang menangani GET dan POST:
-* Jika GET → render form kosong.
-* Jika POST dan `form.is_valid()` → simpan produk baru, lalu redirect ke halaman utama dengan pesan sukses.
-Form ini dirender di template `add_product.html` menggunakan `{{ form.as_p }}` dan `{% csrf_token %}`.
-**Halaman Detail Produk**
-Saya menambahkan view `product_detail()` yang mengambil satu produk berdasarkan `id` menggunakan `get_object_or_404`. View ini merender `detail.html` yang menampilkan informasi lengkap produk seperti nama, harga, kategori, deskripsi, dan gambar.
-**Uji Coba dengan Postman**
-Saya menguji keempat URL data delivery (`/xml/`, `/json/`, `/xml/<id>/`, `/json/<id>/`) menggunakan Postman, lalu mengambil screenshot hasil respons dan menambahkannya ke README.
-**Deployment ke PWS**
-Saya memastikan `ALLOWED_HOSTS` dan `CSRF_TRUSTED_ORIGINS` sudah berisi domain PWS saya. Setelah itu, saya melakukan `git add .`, `git commit`, dan `git push pws master`. Kemudian saya menjalankan `python manage.py migrate` dan `python manage.py collectstatic --noinput` di PWS. Aplikasi berhasil dideploy dan dapat diakses di [https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id/](https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id/).
+# 3. Perbedaan margin, border, dan padding
+- Margin adalah jarak di luar batas elemen, berfungsi untuk memberi ruang antara satu elemen dengan elemen lain.
+- Border adalah garis tepi yang membungkus elemen, letaknya di antara margin dan padding.
+- Padding adalah jarak di dalam elemen, yaitu ruang antara isi konten (seperti teks atau gambar) dengan garis tepi elemen.
 
-## Feedback Asdos
-Ka Fahri di tutorial 2 menurut saya sangat jelas dalam menjelaskan materi dan sabar ketika menjawab pertanyaan. Penjelasannya runtut sehingga mudah dipahami, bahkan untuk saya yang sempat tertinggal karena ada dispensasi. Selain itu, Ka Fahri juga responsif ketika ada kendala teknis, sehingga saya bisa tetap mengikuti progres tugas dengan baik. Terima kasih banyak atas bimbingannya Kak! 🙏
+Ketiganya dipakai untuk mengatur tata letak agar elemen tidak saling menempel, terlihat lebih rapi, dan mudah dibaca.
 
-## Uji Coba Data Delivery dengan Postman
-<img width="1461" height="826" alt="Screenshot 2025-09-16 at 09 27 06" src="https://github.com/user-attachments/assets/f93b72b3-ce83-4deb-a593-f4457514d0c9" />
-<img width="1462" height="836" alt="Screenshot 2025-09-16 at 09 27 24" src="https://github.com/user-attachments/assets/e6cc2665-1ede-401f-a776-bf0e30425c2e" />
-<img width="1467" height="836" alt="Screenshot 2025-09-16 at 09 30 45" src="https://github.com/user-attachments/assets/818d846a-d0be-48fa-86da-701b1c3c2d7c" />
-<img width="1466" height="836" alt="Screenshot 2025-09-16 at 09 30 58" src="https://github.com/user-attachments/assets/611bb843-fcec-412d-bec1-9bcafb3262ed" />
+
+# 4. Konsep Flexbox dan Grid Layout serta Kegunaannya
+Flexbox adalah model tata letak satu dimensi yang mengatur elemen dalam satu arah utama: baris atau kolom. Kelebihan utamanya adalah kemudahan menyusun, meratakan, dan mendistribusikan ruang antar elemen secara fleksibel, termasuk ketika ukuran layar berubah. Flexbox sangat berguna untuk menyusun elemen pada navbar, deretan tombol, kartu yang disejajarkan mendatar, serta pusat-rata (align dan justify) konten secara vertikal maupun horizontal.
+
+Grid Layout adalah model tata letak dua dimensi yang memungkinkan pengaturan baris dan kolom secara bersamaan. Dengan grid, pengembang dapat merancang struktur halaman yang kompleks—misalnya galeri kartu produk, dashboard, atau majalah—dengan kontrol area yang lebih presisi. Grid sangat cocok untuk daftar produk yang perlu berubah dari satu kolom di ponsel menjadi dua atau tiga kolom di tablet dan desktop.
+
+Intinya: gunakan Flexbox untuk penyusunan baris/kolom sederhana dan perataan elemen, gunakan Grid untuk struktur dua dimensi yang membutuhkan kontrol baris dan kolom sekaligus.
+
+# 5. Step-by-Step Implementasi Checklist 
+
+1) Implementasi Edit dan Hapus Product
+- Menambahkan rute dan view untuk mengubah dan menghapus produk pada aplikasi.
+- Mengatur agar fitur Edit dan Delete hanya dapat dilakukan oleh pemilik data (pengguna yang sedang masuk).
+- Setelah data diubah atau dihapus, pengguna diarahkan kembali ke daftar produk dengan pesan status yang sesuai.
+2) Kustomisasi Desain dengan CSS/Framework
+- Menambahkan framework gaya (Tailwind) melalui base layout agar seluruh halaman (login, register, tambah, edit, detail, dan daftar) memiliki tampilan konsisten.
+- Menetapkan palet warna, jarak, dan komponen dasar seperti tombol, kartu, dan panel, sehingga antarmuka terasa seragam dan mudah dipahami.
+3) Kustomisasi Halaman Login dan Register
+- Mengubah halaman autentikasi supaya lebih menarik: penempatan formulir di tengah layar, kartu putih dengan bayangan ringan, dan tombol yang kontras.
+- Menambahkan pesan kesalahan dan tautan yang jelas antara halaman login dan register untuk memudahkan navigasi pengguna.
+4) Kustomisasi Halaman Tambah dan Edit Product
+- Membuat tampilan formulir yang bersih: judul halaman, tombol kembali, bagian formulir yang rapi, dan tombol simpan/perbarui yang tegas.
+- Menampilkan pesan validasi bila input belum sesuai, sehingga pengguna tahu apa yang harus diperbaiki.
+5) Kustomisasi Halaman Detail Product
+- Menampilkan informasi produk secara lengkap dan terstruktur: gambar, nama, kategori, harga, dan deskripsi.
+- Menjaga konsistensi gaya agar selaras dengan halaman daftar dan formulir.
+6) Kustomisasi Halaman Daftar Product yang Menarik dan Responsif
+- Menggunakan Grid Layout untuk menampilkan kartu produk: satu kolom di ponsel, dua kolom di tablet, dan tiga kolom di desktop.
+- Empty state: bila belum ada produk, menampilkan ilustrasi dan pesan yang ramah, serta tombol untuk menambah produk.
+- Kartu produk: setiap kartu berisi gambar, nama, kategori, harga, dan tombol Detail.
+- Tombol Edit dan Delete wajib ada pada setiap kartu, namun hanya terlihat untuk pemilik data; penempatannya dibuat rapi (misalnya di bagian bawah kartu) agar tidak mengganggu fokus konten.
+7) Navbar yang Responsif (Mobile dan Desktop)
+- Membuat navbar dengan logo, tautan ke fitur utama (misalnya daftar produk, tambah produk), serta tombol Login/Register atau Logout berdasarkan status pengguna.
+- Untuk ponsel, menambahkan tombol hamburger yang membuka menu tarik-turun; untuk desktop, menu tampil mendatar.
+- Menjaga keterbacaan dan jarak antarelemen agar navigasi tetap nyaman pada berbagai ukuran layar.
+8) Pemeriksaan Konsistensi dan Akses
+- Memastikan halaman yang memerlukan status masuk (misalnya tambah, edit, hapus) benar-benar terlindungi dan mengarah ke halaman login bila pengguna belum autentikasi.
+- Memeriksa kembali tampilan pada ponsel, tablet, dan desktop melalui peranti pengembang di peramban.
+- Menguji alur lengkap: masuk → tambah produk → lihat detail → edit → hapus → keluar.
