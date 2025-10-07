@@ -1,32 +1,143 @@
 {% extends 'base.html' %}
-{% block title %}Edit Product · Soccerella{% endblock title %}
+{% load static %}
+
+{% block meta %}
+<title>Edit Product · Soccerella</title>
+{% endblock meta %}
 
 {% block content %}
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
-    <a class="btn" href="{% url 'main:home' %}">← Back</a>
-    <h2 style="margin:0;">Edit Product</h2>
-  </div>
+<div
+  class="bg-pink-50/40 w-full min-h-screen"
+  data-product-form-page
+  data-mode="edit"
+  data-product-id="{{ product_id }}"
+  data-api-create="{% url 'main:product_create_ajax' %}"
+  data-api-update-template="{% url 'main:product_update_ajax' 0 %}"
+  data-api-detail-template="{% url 'main:product_detail_ajax' 0 %}"
+  data-redirect="{% url 'main:home' %}"
+>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-  {% if messages %}
-    <ul class="card" style="margin:0 0 12px; list-style:none; padding:10px;">
-      {% for m in messages %}
-        <li class="muted" style="margin:4px 0;">{{ m }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
-  <form method="post" class="card" style="margin-top:6px;">
-    {% csrf_token %}
-    {% if form.non_field_errors %}
-      <div style="border:1px solid #f4a3a3; background:#fff4f4; color:#b71c1c; padding:8px 10px; border-radius:8px; margin-bottom:10px;">
-        {{ form.non_field_errors }}
-      </div>
-    {% endif %}
-    {{ form.as_p }}
-
-    <div style="display:flex; gap:8px; margin-top:8px;">
-      <button type="submit" class="btn btn-primary">Update</button>
-      <a href="{% url 'main:home' %}" class="btn">Cancel</a>
+    <!-- Back Navigation -->
+    <div class="mb-6">
+      <a href="{% url 'main:home' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+        ← Back to Products
+      </a>
     </div>
-  </form>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg border border-pink-100 p-6 sm:p-8 shadow-sm">
+      <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Edit Product 🎀</h1>
+        <p class="text-gray-600">Update details for your listing</p>
+      </div>
+
+      <div data-form-alert class="hidden"></div>
+
+      <form class="space-y-6" novalidate>
+        {% csrf_token %}
+
+        <div
+          data-form-errors
+          class="hidden px-4 py-3 rounded-md text-sm border bg-red-50 border-red-200 text-red-700"
+        ></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label for="product-name" class="block text-sm font-medium text-gray-700 mb-2">
+              Product Name
+            </label>
+            <input
+              id="product-name"
+              name="name"
+              type="text"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-pink-500 transition-colors"
+              placeholder="e.g. Limited Edition Jersey"
+            >
+          </div>
+          <div>
+            <label for="product-price" class="block text-sm font-medium text-gray-700 mb-2">
+              Price (Rp)
+            </label>
+            <input
+              id="product-price"
+              name="price"
+              type="number"
+              min="0"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-pink-500 transition-colors"
+              placeholder="250000"
+            >
+          </div>
+        </div>
+
+        <div>
+          <label for="product-thumbnail" class="block text-sm font-medium text-gray-700 mb-2">
+            Thumbnail URL
+          </label>
+          <input
+            id="product-thumbnail"
+            name="thumbnail"
+            type="url"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-pink-500 transition-colors"
+            placeholder="https://images.example.com/product.jpg"
+          >
+        </div>
+
+        <div>
+          <label for="product-category" class="block text-sm font-medium text-gray-700 mb-2">
+            Category
+          </label>
+          <input
+            id="product-category"
+            name="category"
+            type="text"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-pink-500 transition-colors"
+            placeholder="Accessories"
+          >
+        </div>
+
+        <div>
+          <label for="product-description" class="block text-sm font-medium text-gray-700 mb-2">
+            Description
+          </label>
+          <textarea
+            id="product-description"
+            name="description"
+            rows="4"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-pink-500 transition-colors"
+            placeholder="Describe your product in detail"
+          ></textarea>
+        </div>
+
+        <label class="inline-flex items-center gap-3 text-sm font-medium text-gray-700">
+          <input id="product-featured" name="is_featured" type="checkbox" class="h-4 w-4 text-pink-500 border-gray-300 rounded">
+          Mark as featured item
+        </label>
+
+        <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-pink-100">
+          <a href="{% url 'main:home' %}"
+             class="order-2 sm:order-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors text-center">
+            Cancel
+          </a>
+          <button
+            type="submit"
+            data-submit-label
+            class="order-1 sm:order-2 flex-1 bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-md font-medium transition-colors"
+          >
+            Update Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/products.js' %}" defer></script>
+{% endblock extra_scripts %}

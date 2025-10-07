@@ -1,52 +1,132 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Soccerella · Products{% endblock title %}
+
+{% block meta %}
+<title>Soccerella · Products</title>
+{% endblock meta %}
 
 {% block content %}
-  <!-- Header -->
-  <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:14px;">
-    <div>
-      <h2 style="margin:0 0 6px;">{{ app_name }}</h2>
-      <div class="muted">Logged in as: <b>{{ username }}</b> · Last login: {{ last_login }}</div>
+<div class="bg-pink-50/40 w-full pt-16 min-h-screen" data-products-page>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Our Latest Products 🎀</h1>
+        <p class="text-gray-600">Discover our curated collection from the Soccerella marketplace</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-pink-200 text-pink-600 font-medium transition-colors hover:bg-pink-50"
+          data-refresh-products
+        >
+          ⟳ Refresh
+        </button>
+        <button
+          type="button"
+          class="shrink-0 inline-flex items-center px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-md font-medium transition-colors"
+          data-modal-trigger="create"
+        >
+          + Add Product
+        </button>
+      </div>
     </div>
-    <a class="btn btn-primary" href="{% url 'main:add_product' %}">+ Add Product</a>
-  </header>
 
-  <!-- Empty state -->
-  {% if not products %}
-    <section class="card" style="text-align:center; padding:24px;">
-      <img src="{% static 'image/no-products.png' %}" alt="No products" style="width:112px; height:112px; object-fit:contain; display:block; margin:0 auto 10px;">
-      <p class="muted" style="margin-bottom:10px;">Belum ada product terdaftar.</p>
-      <a class="btn btn-primary" href="{% url 'main:add_product' %}">+ Add Product</a>
-    </section>
-  {% else %}
+    <!-- Filter Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white rounded-lg border border-pink-100 p-4 gap-4">
+      <div class="flex flex-wrap gap-3">
+        <button
+          type="button"
+          class="px-4 py-2 rounded-md font-medium border border-gray-300 text-gray-700 bg-white transition-colors hover:bg-pink-500 hover:text-white"
+          data-filter="all"
+        >
+          All Products
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 rounded-md font-medium border border-gray-300 text-gray-700 bg-white transition-colors hover:bg-pink-500 hover:text-white"
+          data-filter="mine"
+        >
+          My Products
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 rounded-md font-medium border border-gray-300 text-gray-700 bg-white transition-colors hover:bg-pink-500 hover:text-white"
+          data-filter="expensive"
+        >
+          Premium
+        </button>
+      </div>
+      <div class="text-sm text-gray-500">
+        Last login: {{ last_login }}
+      </div>
+    </div>
 
-  <!-- Product grid -->
-  <div class="grid grid-3">
-    {% for p in products %}
-      <article class="card card-has-actions">
-        {% if p.user == request.user %}
-          <div class="card-actions">
-            <a class="btn btn-xs" href="{% url 'main:edit_product' p.id %}">Edit</a>
-            <a class="btn btn-xs btn-danger"
-              href="{% url 'main:delete_product' p.id %}"
-              onclick="return confirm('Hapus {{ p.name }}?');">Delete</a>
-          </div>
-        {% endif %}
+    <!-- Alert -->
+    <div id="product-alert" class="hidden"></div>
+    <div
+      id="product-loading"
+      class="hidden bg-white border border-pink-100 rounded-lg p-10 flex flex-col items-center justify-center text-pink-500 gap-3 text-sm"
+    >
+      <div class="animate-spin inline-block w-10 h-10 border-4 border-pink-100 border-t-pink-500 rounded-full"></div>
+      Loading fresh products...
+    </div>
+    <div
+      id="product-error"
+      class="hidden bg-white border border-red-200 rounded-lg p-6 text-sm text-red-600"
+    >
+      Unable to load products right now. Please try again.
+    </div>
 
-        {% if p.thumbnail %}
-          <img class="resp" src="{{ p.thumbnail }}" alt="{{ p.name }}">
-        {% endif %}
+    <!-- Empty State -->
+    <div
+      id="product-empty"
+      class="hidden bg-white rounded-lg border border-pink-100 p-12 text-center space-y-4"
+    >
+      <div class="w-32 h-32 mx-auto">
+        <img src="{% static 'image/no-products.png' %}" alt="No products available" class="w-full h-full object-contain">
+      </div>
+      <div>
+        <h3 class="text-lg font-medium text-gray-900 mb-1">No products found</h3>
+        <p class="text-gray-500">Be the first to add your product to Soccerella 💖</p>
+      </div>
+      <button
+        type="button"
+        class="inline-flex items-center px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors"
+        data-modal-trigger="create"
+      >
+        + Add Product
+      </button>
+    </div>
 
-        <h3 style="margin:.6rem 0 .3rem;">{{ p.name }}</h3>
-        <div class="muted">Category: {{ p.category }}</div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-          <div style="font-weight:700;">Rp {{ p.price }}</div>
-          <a class="btn" href="{% url 'main:product_detail' p.id %}">Detail</a>
-        </div>
-      </article>
-    {% endfor %}
+    <!-- Product Grid -->
+    <div
+      id="product-grid"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      data-product-grid
+      data-api-list="{% url 'main:products_json' %}"
+      data-api-create="{% url 'main:product_create_ajax' %}"
+      data-api-update-template="{% url 'main:product_update_ajax' 0 %}"
+      data-api-delete-template="{% url 'main:product_delete_ajax' 0 %}"
+      data-api-detail-template="{% url 'main:product_detail_ajax' 0 %}"
+      data-page-detail-template="{% url 'main:product_detail' 0 %}"
+    ></div>
   </div>
-  {% endif %}
+
+  <!-- FAB (mobile) -->
+  <button
+    type="button"
+    data-modal-trigger="create"
+    class="fixed md:hidden right-5 bottom-5 inline-flex items-center justify-center w-14 h-14 rounded-full bg-pink-500 hover:bg-pink-600 text-white shadow-lg"
+  >
+    +
+  </button>
+</div>
+
+{% include 'card_product.html' %}
 {% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/products.js' %}" defer></script>
+{% endblock extra_scripts %}

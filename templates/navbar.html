@@ -1,36 +1,108 @@
-<nav class="nav">
-  <div class="wrap nav-row">
-    <a class="brand" href="{% url 'main:home' %}">🎀 SOCCERELLA</a>
+{% load static %}
+<nav class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur border-b border-pink-100 shadow-sm z-50">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="h-16 flex items-center justify-between">
+      <!-- Brand -->
+      <a href="{% url 'main:home' %}" class="text-xl font-semibold text-gray-900">
+        <span class="text-pink-500">🎀</span> Soccerella
+      </a>
 
-    <!-- Tombol hamburger (muncul di mobile) -->
-    <button class="hamburger" aria-label="Toggle menu" aria-controls="nav-menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+      <!-- Desktop nav -->
+      <ul class="hidden md:flex items-center gap-6">
+        <li>
+          <a href="{% url 'main:home' %}"
+             class="text-gray-600 hover:text-gray-900 font-medium transition">
+            Home
+          </a>
+        </li>
+        {% if request.user.is_authenticated %}
+          <li>
+            <a href="{% url 'main:add_product' %}"
+               class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full font-medium transition">
+              + Add Product
+            </a>
+          </li>
+        {% endif %}
+      </ul>
 
-    <!-- Menu (desktop: selalu terlihat, mobile: dropdown) -->
-    <div id="nav-menu" class="nav-actions">
-      <a class="btn" href="{% url 'main:show_xml' %}">XML</a>
-      <a class="btn" href="{% url 'main:show_json' %}">JSON</a>
+      <!-- Desktop user -->
+      <div class="hidden md:flex items-center gap-4">
+        {% if request.user.is_authenticated %}
+          <div class="text-right">
+            <div class="text-sm font-medium text-gray-900">Welcome, {{ name|default:request.user.username }}</div>
+            <div class="text-xs text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
+          </div>
+          <button
+            type="button"
+            data-logout-link
+            data-endpoint="{% url 'main:logout_api' %}"
+            data-redirect="{% url 'main:login' %}"
+            class="text-pink-600 hover:text-pink-700 font-medium"
+          >
+            Logout
+          </button>
+        {% else %}
+          <a href="{% url 'main:login' %}" class="text-gray-600 hover:text-gray-900 font-medium">Login</a>
+          <a href="{% url 'main:register' %}" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full font-medium">Register</a>
+        {% endif %}
+      </div>
 
-      {% if request.user.is_authenticated %}
-        <span class="muted hi">Hi, {{ request.user.username }}</span>
-        <a class="btn" href="{% url 'main:logout' %}">Logout</a>
-      {% else %}
-        <a class="btn" href="{% url 'main:login' %}">Login</a>
-        <a class="btn btn-primary" href="{% url 'main:register' %}">Register</a>
-      {% endif %}
+      <!-- Mobile button -->
+      <button class="md:hidden p-2 text-gray-600 hover:text-gray-900 mobile-menu-button" aria-label="Toggle menu">
+        <span class="sr-only">Open menu</span>
+        <div class="w-6 h-6 flex flex-col justify-center">
+          <span class="bg-current h-0.5 w-6 rounded-sm"></span>
+          <span class="bg-current h-0.5 w-6 rounded-sm my-1"></span>
+          <span class="bg-current h-0.5 w-6 rounded-sm"></span>
+        </div>
+      </button>
     </div>
   </div>
-</nav>
 
-<script>
-  (function () {
-    const btn = document.querySelector('.hamburger');
-    const menu = document.getElementById('nav-menu');
-    if (!btn || !menu) return;
-    btn.addEventListener('click', () => {
-      const open = menu.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-  })();
-</script>
+  <!-- Mobile menu -->
+  <div class="mobile-menu hidden md:hidden bg-white border-t border-pink-100">
+    <div class="px-6 py-4 space-y-4">
+      <a href="{% url 'main:home' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-2">
+        Home
+      </a>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'main:add_product' %}" class="block bg-pink-500 hover:bg-pink-600 text-white font-medium py-3 px-4 rounded-full text-center">
+          + Add Product
+        </a>
+      {% endif %}
+
+      <div class="border-t border-pink-100 pt-4">
+        {% if request.user.is_authenticated %}
+          <div class="mb-3">
+            <div class="font-medium text-gray-900">Welcome, {{ name|default:request.user.username }}</div>
+            <div class="text-sm text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
+          </div>
+          <button
+            type="button"
+            data-logout-link
+            data-endpoint="{% url 'main:logout_api' %}"
+            data-redirect="{% url 'main:login' %}"
+            class="w-full text-left text-pink-600 hover:text-pink-700 font-medium py-2"
+          >
+            Logout
+          </button>
+        {% else %}
+          <div class="space-y-2">
+            <a href="{% url 'main:login' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-2">
+              Login
+            </a>
+            <a href="{% url 'main:register' %}" class="block bg-pink-500 hover:bg-pink-600 text-white font-medium py-3 px-4 rounded-full text-center">
+              Register
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.querySelector(".mobile-menu-button");
+    const menu = document.querySelector(".mobile-menu");
+    if (btn && menu) btn.addEventListener("click", () => menu.classList.toggle("hidden"));
+  </script>
+</nav>

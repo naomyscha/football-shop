@@ -1,10 +1,25 @@
-from django import forms                # Import modul forms dari Django
-from .models import Product             # Import model Product
+from django import forms
+from django.utils.html import strip_tags
 
-class ProductForm(forms.ModelForm):     # Form untuk model Product
+from .models import Product
+
+
+class ProductForm(forms.ModelForm):
     class Meta:
-        model = Product                 # Model yang digunakan
-        fields = ["name", "price", "description", "thumbnail", "category", "is_featured"] # Field yang ditampilkan
+        model = Product
+        fields = ["name", "price", "description", "thumbnail", "category", "is_featured"]
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 4}), # Widget textarea untuk deskripsi
+            "description": forms.Textarea(attrs={"rows": 4}),
         }
+
+    def clean_name(self):
+        value = self.cleaned_data.get("name", "")
+        return strip_tags(value).strip()
+
+    def clean_description(self):
+        value = self.cleaned_data.get("description", "")
+        return strip_tags(value).strip()
+
+    def clean_category(self):
+        value = self.cleaned_data.get("category", "")
+        return strip_tags(value).strip()

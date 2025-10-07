@@ -1,33 +1,179 @@
-{% extends 'base.html' %} <!-- Menggunakan template base.html sebagai dasar -->
+{% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Soccerella · Detail{% endblock title %} <!-- Judul halaman -->
+{% block meta %}
+<title>Product Detail · Soccerella</title>
+{% endblock meta %}
 
-{% block content %} <!-- Awal blok konten utama -->
-  <a class="btn" href="{% url 'main:home' %}">← Back</a> <!-- Tombol kembali ke halaman utama -->
-  <h2 style="margin-top:10px;">{{ product.name }}</h2> <!-- Nama produk -->
+{% block content %}
+<div
+  class="bg-pink-50/40 w-full min-h-screen"
+  data-product-detail-page
+  data-product-id="{{ product_id }}"
+  data-api-detail-template="{% url 'main:product_detail_ajax' 0 %}"
+  data-api-delete-template="{% url 'main:product_delete_ajax' 0 %}"
+  data-redirect="{% url 'main:home' %}"
+>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-  <div class="grid grid-2" style="margin-top:12px;"> <!-- Grid dua kolom -->
-    <div class="card"> <!-- Card gambar produk -->
-      {% if product.thumbnail %} <!-- Jika ada gambar produk -->
-        <img class="resp" src="{{ product.thumbnail }}" alt="{{ product.name }}"> <!-- Tampilkan gambar produk -->
-      {% else %}
-        <p class="muted">No image</p> <!-- Pesan jika tidak ada gambar -->
-      {% endif %}
+    <div class="mb-4">
+      <a href="{% url 'main:home' %}" class="text-gray-600 hover:text-gray-900 font-medium transition">
+        ← Back to Products
+      </a>
     </div>
 
-    <div class="card"> <!-- Card detail produk -->
-      <p><b>ID:</b> {{ product.id }}</p> <!-- ID produk -->
-      <p><b>Category:</b> {{ product.category }}</p> <!-- Kategori produk -->
-      <p><b>Price:</b> Rp {{ product.price }}</p> <!-- Harga produk -->
-      <p><b>Featured:</b> {{ product.is_featured|yesno:"✅,🚫" }}</p> <!-- Status unggulan -->
-      <p><b>Image URL:</b>
-        {% if product.thumbnail %} <!-- Jika ada gambar produk -->
-          <a href="{{ product.thumbnail }}" target="_blank">{{ product.thumbnail }}</a> <!-- Link gambar -->
-        {% else %}
-          <span class="muted">—</span> <!-- Tanda jika tidak ada gambar -->
-        {% endif %}
-      </p>
-      <p><b>Description:</b><br>{{ product.description|default:"(no description)" }}</p> <!-- Deskripsi produk -->
+    <div
+      data-detail-alert
+      class="hidden"
+    ></div>
+
+    <div
+      data-detail-loading
+      class="bg-white border border-pink-100 rounded-xl p-8 flex items-center justify-center text-gray-500 text-sm"
+    >
+      Loading product details...
+    </div>
+
+    <div
+      data-detail-error
+      class="hidden bg-white border border-red-200 rounded-xl p-8 text-center text-red-600 text-sm"
+    >
+      Unable to load product details. Please try again later.
+    </div>
+
+    <section data-detail-content class="hidden">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- LEFT: gallery -->
+        <div class="lg:col-span-6 space-y-3">
+          <div class="bg-white border border-pink-100 rounded-xl overflow-hidden shadow-sm relative">
+            <img
+              data-detail-image
+              alt="Product image"
+              class="hidden w-full h-80 sm:h-[28rem] object-cover transition-opacity duration-300"
+            >
+            <div
+              data-detail-image-placeholder
+              class="w-full h-80 sm:h-[28rem] bg-pink-50 flex items-center justify-center text-pink-300 text-sm"
+            >
+              No image available
+            </div>
+          </div>
+          <div class="grid grid-cols-4 gap-3">
+            <!-- Thumbnail previews placeholder -->
+          </div>
+        </div>
+
+        <!-- RIGHT: info & actions -->
+        <div class="lg:col-span-6 space-y-6">
+          <article class="bg-white border border-pink-100 rounded-xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                data-detail-category
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-pink-100 text-pink-700 border border-pink-200"
+              >
+                Category
+              </span>
+            </div>
+
+            <header class="space-y-4">
+              <h1
+                data-detail-name
+                class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight"
+              >
+                Product Name
+              </h1>
+              <div class="flex items-end gap-3">
+                <div class="text-3xl sm:text-4xl font-extrabold text-pink-600" data-detail-price>
+                  Rp 0
+                </div>
+                <span class="text-xs text-gray-400" data-detail-id>#0</span>
+              </div>
+            </header>
+
+            <div class="bg-pink-50/60 border border-pink-100 rounded-xl p-4 text-sm text-gray-600 space-y-2">
+              <div>
+                <span class="text-gray-500">Seller:</span>
+                <span data-detail-owner class="font-medium">Anonymous seller</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Image URL:</span>
+                <a
+                  data-detail-thumbnail-link
+                  href="#"
+                  target="_blank"
+                  class="text-pink-600 hover:text-pink-700 break-all"
+                >
+                  <span data-detail-thumbnail>—</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row flex-wrap gap-3">
+              <button
+                type="button"
+                class="inline-flex justify-center items-center px-5 py-3 rounded-md bg-pink-500 hover:bg-pink-600 text-white font-semibold shadow-soft"
+              >
+                Buy Now
+              </button>
+              <button
+                type="button"
+                class="inline-flex justify-center items-center px-5 py-3 rounded-md border border-pink-200 text-gray-700 hover:bg-pink-50 font-semibold"
+              >
+                Add to Wishlist
+              </button>
+              <div
+                data-detail-owner-actions
+                class="flex flex-col sm:flex-row gap-3 hidden"
+              >
+                <a
+                  data-detail-manage-link
+                  data-template="{% url 'main:edit_product' 0 %}"
+                  class="inline-flex justify-center items-center px-5 py-3 rounded-md border border-pink-200 text-gray-700 hover:bg-pink-50 font-semibold"
+                >
+                  Edit
+                </a>
+                <button
+                  type="button"
+                  data-detail-delete
+                  class="inline-flex justify-center items-center px-5 py-3 rounded-md border border-red-200 text-red-600 hover:bg-red-50 font-semibold"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <div class="bg-white border border-pink-100 rounded-xl p-6 shadow-sm">
+            <h2 class="text-lg font-semibold text-gray-900 mb-3">Description</h2>
+            <div
+              class="text-gray-700 leading-relaxed whitespace-pre-line"
+              data-detail-description
+            >
+              (No description)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div
+    data-detail-content
+    class="hidden fixed inset-x-0 bottom-0 z-40 border-t border-pink-100 bg-white/95 backdrop-blur md:hidden"
+  >
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="text-xl font-extrabold text-pink-600" data-detail-price>Rp 0</div>
+      <button
+        type="button"
+        class="px-5 py-3 rounded-md bg-pink-500 hover:bg-pink-600 text-white font-semibold shadow-soft"
+      >
+        Buy Now
+      </button>
     </div>
   </div>
-{% endblock content %} <!-- Akhir blok konten utama -->
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/products.js' %}" defer></script>
+{% endblock extra_scripts %}

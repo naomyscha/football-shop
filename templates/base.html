@@ -1,82 +1,50 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{% block title %}Soccerella{% endblock title %}</title>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% block meta %}{% endblock meta %}
+    <title>{% block title %}Soccerella{% endblock title %}</title>
 
-  <!-- Tailwind untuk halaman auth/form -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    :root{
-      --bg:#fff8fc; --text:#333; --card:#fff; --border:#f4cfe0; --brand:#f08bb6;
-    }
-    *{box-sizing:border-box}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)}
-
-    /* ===== NAVBAR (dipakai oleh navbar.html) ===== */
-    .nav{background:#fff; border-bottom:1px solid var(--border); padding:10px 16px;}
-    .nav a{color:#6b355f; text-decoration:none; font-weight:700}
-    .brand{letter-spacing:.2px}
-    .wrap{max-width:900px; margin:18px auto; padding:0 16px;}
-    .nav-row{display:flex; align-items:center; justify-content:space-between; position:relative;}
-    .nav-actions{display:flex; gap:8px; align-items:center;}
-    .hamburger{display:none; background:#fff; border:1px solid var(--border); border-radius:10px; padding:6px; cursor:pointer}
-    .hamburger span{display:block; width:20px; height:2px; background:#6b355f; margin:3px 0; border-radius:2px}
-
-    /* Mobile (≤700px): actions jadi dropdown */
-    @media (max-width:700px){
-      .hamburger{display:inline-flex; align-items:center; justify-content:center;}
-      .nav-actions{
-        display:none;
-        position:absolute; right:0; top:48px; z-index:50;
-        background:#fff; border:1px solid var(--border); border-radius:12px;
-        padding:10px; box-shadow:0 6px 24px rgba(0,0,0,.06);
-        flex-direction:column; gap:8px; min-width:220px;
+    <!-- Tailwind (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+    <!-- Optional: extend warna supaya bisa pakai class bg-primary, text-primary, dll -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: { 100:'#fde7f1', 500:'#f38cb8', 600:'#e85aa8' },
+              blush: '#fff6fb'
+            },
+            boxShadow: { soft: '0 8px 24px rgba(232, 90, 168, 0.08)' },
+            borderRadius: { xl: '1rem' }
+          }
+        }
       }
-      .nav-actions.open{display:flex;}
-      .nav-actions .hi{padding:6px 8px}
-    }
-    @media (min-width:701px){
-      .nav-actions{display:flex;}
-      .hamburger{display:none;}
-    }
+    </script>
 
-    /* ===== KOMponen umum ===== */
-    .panel{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px;}
-    .btn{display:inline-block; padding:8px 12px; border-radius:999px; border:1px solid var(--border); text-decoration:none; color:#6b355f; font-weight:600}
-    .btn-primary{background:var(--brand); color:#fff; border-color:#ee7eb0}
-    .muted{color:#666; font-size:.95rem}
-    .card{border:1px solid var(--border); border-radius:10px; padding:12px; background:#fff}
-    img.resp{max-width:100%; height:auto; display:block; margin:0 auto}
+    <!-- External CSS (global) -->
+    <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
 
-    /* Grid responsif: 1 → 2 → 3 kolom */
-    .grid{display:grid; gap:12px}
-    @media (min-width:520px){ .grid-2{grid-template-columns:repeat(2,1fr)} }
-    @media (min-width:900px){ .grid-3{grid-template-columns:repeat(3,1fr)} }
+    {% block extra_head %}{% endblock extra_head %}
+  </head>
+  <body class="bg-blush text-gray-800">
+    <!-- Include navbar di semua halaman (opsional, kalau kamu pakai navbar.html) -->
+    {% include 'navbar.html' %}
 
-    /* ===== Aksi pada card (Edit/Delete) — footer rapi ===== */
-    .card-footer{
-      margin-top:10px; padding-top:10px; border-top:1px solid var(--border);
-      display:flex; gap:6px; justify-content:flex-end;
-    }
-    .btn-xs{ padding:6px 8px; font-size:.85rem; border-radius:999px; }
-    .btn-danger{ border-color:#f4a3a3; color:#b71c1c; background:#fff; }
-  </style>
+    <!-- Main wrapper -->
+    <main class="pt-16">
+      <div class="container-scl">
+        {% block content %}{% endblock content %}
+      </div>
+    </main>
 
-  {% block extra_head %}{% endblock extra_head %}
-</head>
-<body>
-  {% include 'navbar.html' %}
-
-  <main class="wrap">
-    <section class="panel">
-      {% block content %}{% endblock content %}
-    </section>
-  </main>
-
-  {% block extra_scripts %}{% endblock extra_scripts %}
-</body>
+    {% include 'toast.html' %}
+    {% include 'modal.html' %}
+    <script src="{% static 'js/toast.js' %}" defer></script>
+    {% block extra_scripts %}{% endblock extra_scripts %}
+  </body>
 </html>

@@ -116,8 +116,12 @@ USE_I18N = True                   # Aktifkan i18n
 USE_TZ = True                     # Aktifkan timezone
 
 # Pengaturan static files
-STATIC_URL = 'static/'            # URL static
-STATIC_ROOT = BASE_DIR / "staticfiles" # Folder static root
+STATIC_URL = 'static/'
+
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / 'static']
+else:
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField' # Default PK
