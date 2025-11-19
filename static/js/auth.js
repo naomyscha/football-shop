@@ -1,24 +1,31 @@
 (() => {
+  // Fungsi untuk mendapatkan nilai cookie berdasarkan nama
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
+    if (parts.length === 2) return parts.pop().split(';').shift();
     return "";
   };
 
+  // Ambil CSRF token dari cookie
   const csrfToken = getCookie("csrftoken");
+
+  // Inisialisasi sistem toast notification
   const toast = window.SoccerellaToast || {
-    show: () => {},
+    show: () => {}, // Fallback jika toast belum tersedia
     enqueue: () => {},
   };
 
+  // Fungsi untuk menampilkan error pada form
   const renderErrors = (container, errors) => {
-    if (!container) return;
+    if (!container) return; // Validasi container
     if (!errors || Object.keys(errors).length === 0) {
       container.classList.add("hidden");
       container.innerHTML = "";
       return;
     }
+    
+    // Render setiap error message
     container.innerHTML = "";
     const fragment = document.createDocumentFragment();
     Object.entries(errors).forEach(([field, values]) => {
@@ -37,24 +44,31 @@
     container.classList.remove("hidden");
   };
 
+  // Fungsi untuk menampilkan alert message
   const showAlert = (container, message, type = "success") => {
     if (!container) return;
     container.classList.add("hidden");
     container.innerHTML = "";
     if (!message) return;
+
+    // Style dasar dan warna berdasarkan tipe alert
     const base = "px-4 py-3 rounded-md text-sm border transition";
-    const palette =
-      type === "error"
-        ? "bg-red-50 border-red-200 text-red-700"
-        : "bg-green-50 border-green-200 text-green-700";
+    const palette = type === "error"
+      ? "bg-red-50 border-red-200 text-red-700"
+      : "bg-green-50 border-green-200 text-green-700";
+
+    // Buat dan tampilkan alert
     const wrapper = document.createElement("div");
     wrapper.className = `${base} ${palette}`;
     wrapper.textContent = message;
     container.appendChild(wrapper);
     container.classList.remove("hidden");
+    
+    // Auto hide setelah 3 detik
     setTimeout(() => container.classList.add("hidden"), 3000);
   };
 
+  // Setup form autentikasi
   document.querySelectorAll("[data-auth-form]").forEach((form) => {
     const apiUrl = form.dataset.api;
     const redirectUrl = form.dataset.redirect;
@@ -62,6 +76,7 @@
     const alertBox = form.querySelector("[data-form-alert]");
     const submitButton = form.querySelector("[data-submit-label]");
 
+    // Handle submit form
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!apiUrl) return;
@@ -126,6 +141,8 @@
       }
     });
   });
+
+  // Cek status logout dari URL parameter
   const params = new URLSearchParams(window.location.search);
   if (params.get("logged_out")) {
     toast.show("Signed out", "You have been logged out.", "info");
@@ -134,6 +151,7 @@
     window.history.replaceState({}, document.title, newUrl);
   }
 
+  // Setup tombol logout
   document.querySelectorAll("[data-logout-link]").forEach((button) => {
     button.addEventListener("click", async () => {
       const endpoint = button.dataset.endpoint || "/api/auth/logout/";

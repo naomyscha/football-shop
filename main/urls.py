@@ -21,6 +21,8 @@ from .views import (
     show_json_by_id,
     show_xml,
     show_xml_by_id,
+    proxy_image,
+    show_user_json,
 )
 
 app_name = "main"
@@ -51,4 +53,7 @@ urlpatterns = [
     path("api/auth/register/", register_api, name="register_api"),
     path("api/auth/login/", login_api, name="login_api"),
     path("api/auth/logout/", logout_api, name="logout_api"),
+    path('proxy-image/', proxy_image, name='proxy_image'),
+
+    path('user-json/', show_user_json, name='show_user_json'), # Path baru
 ]

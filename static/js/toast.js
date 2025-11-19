@@ -1,9 +1,12 @@
 (() => {
+  // Key untuk menyimpan antrian toast di localStorage
   const TOAST_KEY = "soccerella_toast_queue";
 
+  // Pastikan container toast tersedia
   const ensureContainer = () => {
     let container = document.getElementById("toast-root");
     if (!container) {
+      // Buat container jika belum ada
       container = document.createElement("div");
       container.id = "toast-root";
       container.className =
@@ -13,6 +16,7 @@
     return container;
   };
 
+  // Konfigurasi style untuk berbagai tipe toast
   const palettes = {
     success: {
       wrapper: "bg-pink-500 text-white shadow-lg shadow-pink-500/30",
@@ -28,14 +32,19 @@
     },
   };
 
+  // Membuat elemen toast
   const buildToast = (title, message, type = "info") => {
     const palette = {
       ...palettes.info,
       ...(palettes[type] || {}),
     };
+
+    // Sanitasi input untuk keamanan
     const purify = window.DOMPurify;
     const safeTitle = title ? (purify ? purify.sanitize(title) : title) : "";
     const safeMessage = message ? (purify ? purify.sanitize(message) : message) : "";
+
+    // Buat elemen toast
     const wrapper = document.createElement("div");
     wrapper.className =
       "pointer-events-auto rounded-xl px-4 py-3 text-sm font-medium flex items-start gap-3 transition transform translate-y-2 opacity-0";
@@ -55,11 +64,13 @@
     return wrapper;
   };
 
+  // Menghilangkan toast
   const dismissToast = (toast) => {
     toast.classList.add("translate-y-2", "opacity-0");
     setTimeout(() => toast.remove(), 180);
   };
 
+  // Menampilkan toast
   const showToast = (title, message, type = "info", timeout = 3200) => {
     if (!title && !message) return;
     const container = ensureContainer();
@@ -70,12 +81,14 @@
     }
   };
 
+  // Menambahkan toast ke antrian
   const enqueue = (title, message, type = "info", timeout = 3200) => {
     const queue = JSON.parse(sessionStorage.getItem(TOAST_KEY) || "[]");
     queue.push({ title, message, type, timeout });
     sessionStorage.setItem(TOAST_KEY, JSON.stringify(queue));
   };
 
+  // Memproses antrian toast
   const flushQueue = () => {
     const queueRaw = sessionStorage.getItem(TOAST_KEY);
     if (!queueRaw) return;
@@ -90,8 +103,10 @@
     }
   };
 
+  // Export fungsi toast ke window
   window.SoccerellaToast = { show: showToast, enqueue };
   window.showToast = showToast;
 
+  // Jalankan flush queue saat DOM ready
   document.addEventListener("DOMContentLoaded", flushQueue);
 })();

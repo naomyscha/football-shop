@@ -23,8 +23,15 @@ SECRET_KEY = 'django-insecure-81h9cpx4o55xke=5oegv4b398ttdo7fnr_h0cxsi*ofnf!8uxy
 PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true' # Cek mode produksi
 DEBUG = True                            # Aktifkan debug (jangan di production)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "naomyscha-attalie-footballshop.pbp.cs.ui.ac.id"] # Host yang diizinkan
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "naomyscha-attalie-footballshop.pbp.cs.ui.ac.id", "10.0.2.2"] # Host yang diizinkan
 CSRF_TRUSTED_ORIGINS = ["https://naomyscha-attalie-footballshop.pbp.cs.ui.ac.id"]           # Origin CSRF yang dipercaya
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 # Daftar aplikasi yang digunakan
 INSTALLED_APPS = [
@@ -34,11 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',          # Session
     'django.contrib.messages',          # Messages
     'django.contrib.staticfiles',       # Static files
-    'main'                             # Aplikasi utama
+    'main',                             # Aplikasi utama
+    'corsheaders',
+    'authentication',
 ]
 
 # Daftar middleware yang digunakan
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',         # Middleware keamanan
     "whitenoise.middleware.WhiteNoiseMiddleware",            # Middleware static file
     'django.contrib.sessions.middleware.SessionMiddleware',  # Middleware session

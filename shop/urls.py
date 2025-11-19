@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Routing root ('/') diarahkan ke urls.py di aplikasi 'main'
     path("", include("main.urls")),  # root -> app main
+    path('auth/', include('authentication.urls')),
 ]

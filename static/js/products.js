@@ -1,28 +1,37 @@
 (() => {
+  // Kelas untuk menampilkan modal
   const modalClassVisible = ["flex"];
 
+  // Fungsi untuk mendapatkan cookie
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
+    if (parts.length === 2) return parts.pop().split(';').shift();
     return "";
   };
 
+  // Ambil CSRF token dan elemen-elemen penting
   const csrfToken = getCookie("csrftoken");
   const productPage = document.querySelector("[data-products-page]");
   const detailPage = document.querySelector("[data-product-detail-page]");
+  
+  // Setup sistem notifikasi toast
   const toast = window.SoccerellaToast || {
     show: () => {},
     enqueue: () => {},
   };
 
-  // Utility helpers -------------------------------------------------------
+  // === UTILITY HELPERS ===
+  
+  // Format angka ke format mata uang Indonesia
   const formatCurrency = (value) =>
     new Intl.NumberFormat("id-ID").format(Number(value) || 0);
 
+  // Build URL dari template dengan mengganti ID
   const buildUrlFromTemplate = (template, id) =>
     template.replace(/0(\/)?$/, `${id}$1`);
 
+  // Fungsi untuk membuat alert
   const createAlert = (element, message, type = "success") => {
     if (!element) return;
     element.classList.add("hidden");
@@ -43,6 +52,7 @@
     setTimeout(() => element.classList.add("hidden"), 3500);
   };
 
+  // Render error form
   const renderFormErrors = (container, errors) => {
     if (!container) return;
     if (!errors || Object.keys(errors).length === 0) {
@@ -68,7 +78,7 @@
     container.classList.remove("hidden");
   };
 
-  // Product listing + CRUD ------------------------------------------------
+  // === PRODUCT LISTING + CRUD ===
   if (productPage) {
     const state = {
       filter: "all",
@@ -440,7 +450,7 @@
     fetchProducts();
   }
 
-  // Product detail --------------------------------------------------------
+  // === PRODUCT DETAIL ===
   if (detailPage) {
     const container = detailPage;
     const loadingState = container.querySelector("[data-detail-loading]");
@@ -629,7 +639,7 @@
     });
   }
 
-  // Standalone product form (add / edit) ----------------------------------
+  // === PRODUCT FORM (ADD/EDIT) ===
   const productFormPage = document.querySelector("[data-product-form-page]");
   if (productFormPage) {
     const mode = productFormPage.dataset.mode || "create";
