@@ -24,6 +24,7 @@ from django.utils.html import strip_tags
 
 from .forms import ProductForm
 from .models import Product
+from django.views.decorators.csrf import csrf_exempt
 
 
 def _product_to_dict(product, user=None):
@@ -343,4 +344,40 @@ def show_user_json(request):
     data_user = Product.objects.filter(user=request.user)
     
     # Serialisasi data dan kembalikan
-    return HttpResponse(serializers.serialFize("json", data_user), content_type="application/json")
+    return HttpResponse(serializers.serialize("json", data_user), content_type="application/json")
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        # Pastikan user sudah login
+        if not request.user.is_authenticated:
+            return JsonResponse({"status": "error", "message": "Authentication required."}, status=401)
+
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON."}, status=400)
+
+        # Sanitasi dan ambil data
+        name = strip_tags(data.get("name", ""))
+        price = data.get("price")
+        description = strip_tags(data.get("description", ""))
+        thumbnail = data.get("thumbnail", "")
+        category = data.get("category", "")
+        is_featured = data.get("is_featured", False)
+
+        # Buat objek Product baru
+        new_product = Product(
+            user=request.user,
+            name=name, 
+            price=price, # Asumsi harga sudah divalidasi/dikonversi menjadi int/float di Flutter
+            description=description,
+            thumbnail=thumbnail,
+            category=category,
+            is_featured=is_featured,
+        )
+        new_product.save()
+
+        return JsonResponse({"status": "success", "message": "Product saved successfully!"}, status=201)
+
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)

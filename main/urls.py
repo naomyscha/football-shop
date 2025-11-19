@@ -23,6 +23,7 @@ from .views import (
     show_xml_by_id,
     proxy_image,
     show_user_json,
+    create_product_flutter
 )
 
 app_name = "main"
@@ -56,4 +57,5 @@ urlpatterns = [
     path('proxy-image/', proxy_image, name='proxy_image'),
 
     path('user-json/', show_user_json, name='show_user_json'), # Path baru
+    path('create-flutter/', create_product_flutter, name='create_product_flutter'),
 ]
